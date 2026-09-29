@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Environment variables - NEVER commit these!
+.env
+.env.local
+.env.development
+.env.production
+
+# Server folder env files (relative to app folder)
+server/.env
+server/.env.local
+server/.env.development
+server/.env.production
+
+# Src folder env files
+src/.env
+src/.env.local
+src/.env.development
+src/.env.production
+
+# Build folders
+build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
