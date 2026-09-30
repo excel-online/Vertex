@@ -184,7 +184,7 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchCoins = async () => {
       try {
-        const response = await marketService.getTopCoins();
+        const response: any = await marketService.getTopCoins();
         const coinData = Array.isArray(response) ? response : response?.data || [];
         
         if (Array.isArray(coinData) && coinData.length > 0) {
