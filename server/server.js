@@ -40,10 +40,7 @@ app.use(helmet({
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://69a7c7927067ee7a6fe117ee--Vellumtradeplatform.netlify.app',
-  'https://69a8163c924800aded1627--Vellumtradeplatform.netlify.app',
-  'https://www.vellumtrade.com',
-  'https://vellumtrade.com'
+  'https://vertex-gtp6.vercel.app',
 ];
 
 app.use(cors({
