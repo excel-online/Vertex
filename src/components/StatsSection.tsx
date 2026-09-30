@@ -1,4 +1,3 @@
-cat << 'EOF' > src/components/StatsSection.tsx
 import { useEffect, useState } from 'react';
 import { Globe, Users, TrendingUp, Building2 } from 'lucide-react';
 
