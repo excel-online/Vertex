@@ -207,6 +207,25 @@ app.get('/api/market/forex-ticker', async (req, res) => {
   }
 });
 
+// CoinGecko Top Coins Proxy Endpoint
+app.get('/api/market/coins', async (req, res) => {
+  try {
+    const response = await axios.get('https://api.coingecko.com/api/v3/coins/markets', {
+      params: {
+        vs_currency: 'usd',
+        order: 'market_cap_desc',
+        per_page: 20,
+        page: 1,
+        sparkline: false
+      }
+    });
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching coin data from CoinGecko:', error.message);
+    res.status(500).json({ error: 'Failed to fetch market data' });
+  }
+});
+
 // Health Check Endpoint
 app.get('/api/health', (req, res) => {
   res.json({
@@ -229,7 +248,8 @@ app.get('/', (req, res) => {
       admin: '/api/admin',
       support: '/api/support',
       health: '/api/health',
-      forex: '/api/market/forex-ticker'
+      forex: '/api/market/forex-ticker',
+      coins: '/api/market/coins'
     }
   });
 });
