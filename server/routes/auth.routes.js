@@ -244,7 +244,7 @@ router.post('/register', [
     await user.save();
 
     const token = generateToken(user._id);
-    res.status(201).json({ success: true, message: 'Registration successful!', token, user: { id: user._id, email: user.email, username: user.username } });
+    res.status(201).json({ success: true, message: 'Registration successful!', token, user: { id: user._id, email: user.email, username: user.username, firstName: user.firstName, lastName: user.lastName, phoneNumber: user.phoneNumber, country: user.country, accountType: user.accountType, currencyType: user.currencyType, investmentTier: user.investmentTier, referralCode: user.referralCode } });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error during registration.' });
   }
@@ -272,7 +272,25 @@ router.post('/login', [
     await user.save();
 
     const token = generateToken(user._id);
-    res.json({ success: true, message: 'Login successful!', token, user: { id: user._id, email: user.email, username: user.username, isAdmin: user.isAdmin } });
+    res.json({ 
+      success: true, 
+      message: 'Login successful!', 
+      token, 
+      user: { 
+        id: user._id, 
+        email: user.email, 
+        username: user.username, 
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phoneNumber: user.phoneNumber,
+        country: user.country,
+        accountType: user.accountType,
+        currencyType: user.currencyType,
+        investmentTier: user.investmentTier,
+        referralCode: user.referralCode,
+        isAdmin: user.isAdmin 
+      } 
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error during login.' });
   }
@@ -340,6 +358,12 @@ router.post('/google', [
         lastName: user.lastName,
         username: user.username,
         email: user.email,
+        phoneNumber: user.phoneNumber,
+        country: user.country,
+        accountType: user.accountType,
+        currencyType: user.currencyType,
+        investmentTier: user.investmentTier,
+        referralCode: user.referralCode,
         isAdmin: user.isAdmin,
         totalBalance: user.totalBalance
       }
@@ -347,6 +371,57 @@ router.post('/google', [
   } catch (error) {
     console.error('Google auth error:', error);
     res.status(500).json({ success: false, message: 'Server error during Google authentication.' });
+  }
+});
+
+// ============================================
+// UPDATE USER PROFILE ROUTE
+// ============================================
+router.put('/profile', verifyToken, [
+  body('firstName').optional().trim().notEmpty(),
+  body('lastName').optional().trim().notEmpty(),
+  body('phoneNumber').optional().trim().notEmpty(),
+  body('country').optional().trim().notEmpty()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, message: 'Validation failed', errors: errors.array() });
+    }
+
+    const { firstName, lastName, phoneNumber, country } = req.body;
+    
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
+    if (country) user.country = country;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully!',
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        username: user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        country: user.country,
+        totalBalance: user.totalBalance,
+        accountType: user.accountType,
+        currencyType: user.currencyType,
+        investmentTier: user.investmentTier,
+        referralCode: user.referralCode
+      }
+    });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ success: false, message: 'Server error during profile update.' });
   }
 });
 
