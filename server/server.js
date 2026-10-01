@@ -41,6 +41,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://vertex-gtp6.vercel.app',
+  'https://vertex-five-eta.vercel.app',
 ];
 
 app.use(cors({
