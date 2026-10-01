@@ -4,6 +4,7 @@ import { Eye, EyeOff, User, Mail, Lock, Phone, Globe, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import axios from 'axios';
 
 // Notification data
 const countries = [
@@ -92,8 +93,8 @@ const RegisterPage = () => {
   });
 
   // Notification state
-  const [notifications, setNotifications] = useState([]);
-  const [candles, setCandles] = useState([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [candles, setCandles] = useState<any[]>([]);
 
   // Generate candlestick data
   useEffect(() => {
@@ -116,17 +117,14 @@ const RegisterPage = () => {
 
   // Notification system - appears every minute
   useEffect(() => {
-    // Show first notification after 5 seconds
     const initialTimeout = setTimeout(() => {
       const firstNotif = generateNotification();
       setNotifications([firstNotif]);
     }, 5000);
 
-    // Then every minute (60000ms)
     const interval = setInterval(() => {
       const newNotif = generateNotification();
       setNotifications(prev => {
-        // Keep only last 3 notifications
         const updated = [...prev, newNotif].slice(-3);
         return updated;
       });
@@ -148,7 +146,7 @@ const RegisterPage = () => {
     }
   }, [notifications]);
 
-  const removeNotification = (id) => {
+  const removeNotification = (id: number) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
@@ -204,6 +202,30 @@ const RegisterPage = () => {
 
   const handleBack = () => {
     setStep(1);
+  };
+
+  const handleGoogleRegister = async () => {
+    try {
+      setIsLoading(true);
+      // Integration sample payload for Google authentication
+      const googleUserSample = {
+        email: 'user@gmail.com',
+        firstName: 'Google',
+        lastName: 'User'
+      };
+
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/google`, googleUserSample);
+
+      if (response.data.success) {
+        localStorage.setItem('token', response.data.token);
+        toast.success('Google registration successful!');
+        navigate('/dashboard');
+      }
+    } catch {
+      toast.error('Google authentication failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -413,6 +435,28 @@ const RegisterPage = () => {
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-white mb-2">Create Account</h1>
             <p className="text-slate-400">Start your investment journey</p>
+          </div>
+
+          {/* Google Auth Button */}
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={handleGoogleRegister}
+              className="w-full flex items-center justify-center gap-3 bg-slate-900/80 border border-slate-700 hover:border-cyan-400 text-white font-medium py-3 rounded-lg transition-all"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.2v3.15C3.21 21.34 7.32 24 12 24z"/>
+                <path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.39-1.49-.39-2.24s.14-1.52.39-2.24V6.6H1.2C.43 8.15 0 9.89 0 12s.43 3.85 1.2 5.4l4.07-3.16z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.32 0 3.21 2.66 1.2 6.6l4.07 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/>
+              </svg>
+              Continue with Google
+            </button>
+            <div className="relative flex py-4 items-center">
+              <div className="flex-grow border-t border-slate-700"></div>
+              <span className="flex-shrink mx-4 text-slate-500 text-xs uppercase">Or with email</span>
+              <div className="flex-grow border-t border-slate-700"></div>
+            </div>
           </div>
 
           {/* Progress Steps */}
