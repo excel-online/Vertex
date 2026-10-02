@@ -121,11 +121,9 @@ const LoginPage = () => {
     }
   };
 
-  // Connected Google Login Function
   const handleGoogleLogin = async () => {
     try {
       setIsLoading(true);
-      // Example simulation prompt data or connect Google SDK popup here
       const sampleGoogleUser = {
         email: "googleuser@gmail.com",
         firstName: "Google",
@@ -185,7 +183,12 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-slate-300">Password</label>
+                <NavLink to="/forgot-password" className="text-xs text-amber-500 hover:text-amber-400 font-medium">
+                  Forgot password?
+                </NavLink>
+              </div>
               <div className="relative group">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                 <input
