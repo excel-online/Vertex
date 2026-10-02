@@ -11,7 +11,7 @@ const depositMethods = [
     name: 'Bitcoin',
     symbol: 'BTC',
     icon: '₿',
-    color: 'from-orange-500 to-yellow-500',
+    color: 'from-orange-500 to-amber-500',
     minAmount: 100,
     processingTime: '10-30 minutes',
     network: 'Bitcoin Network'
@@ -21,7 +21,7 @@ const depositMethods = [
     name: 'Ethereum',
     symbol: 'ETH',
     icon: 'Ξ',
-    color: 'from-purple-500 to-blue-500',
+    color: 'from-purple-500 to-indigo-500',
     minAmount: 100,
     processingTime: '5-15 minutes',
     network: 'ERC20 Network'
@@ -31,7 +31,7 @@ const depositMethods = [
     name: 'USDT (Tether)',
     symbol: 'USDT',
     icon: '₮',
-    color: 'from-green-500 to-teal-500',
+    color: 'from-emerald-500 to-teal-500',
     minAmount: 100,
     processingTime: '5-15 minutes',
     network: 'ERC20 Network'
@@ -41,7 +41,7 @@ const depositMethods = [
 const DepositsPage = () => {
   const [selectedMethod, setSelectedMethod] = useState('Bitcoin');
   const [amount, setAmount] = useState('');
-  const [transactionHash, setTransactionHash] = useState(''); // ✅ NEW: Transaction ID state
+  const [transactionHash, setTransactionHash] = useState('');
   const [walletAddresses, setWalletAddresses] = useState<WalletAddresses | null>(null);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -78,7 +78,6 @@ const DepositsPage = () => {
       return;
     }
 
-    // ✅ NEW: Validate transaction hash is provided
     if (!transactionHash.trim()) {
       toast.error('Please enter your Transaction ID / Hash');
       return;
@@ -89,13 +88,13 @@ const DepositsPage = () => {
       const response = await userService.createDeposit({
         amount: parseFloat(amount),
         depositMethod: selectedMethod,
-        transactionHash: transactionHash.trim() // ✅ NEW: Send transaction hash to backend
+        transactionHash: transactionHash.trim()
       });
 
       if (response.success) {
         toast.success('Deposit request created successfully!');
         setAmount('');
-        setTransactionHash(''); // ✅ NEW: Clear transaction hash after success
+        setTransactionHash('');
       } else {
         toast.error(response.message || 'Failed to create deposit');
       }
@@ -110,50 +109,51 @@ const DepositsPage = () => {
   const currentAddress = walletAddresses?.[selectedMethod as keyof WalletAddresses];
 
   return (
-    <div className="space-y-8 pb-24">
-      {/* Header */}
-      <div className="glass-card p-6">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-success/20 flex items-center justify-center">
-            <ArrowDownLeft className="w-6 h-6 text-success" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-black">Make a Deposit</h2>
-            <p className="text-muted-foreground">
-              Choose your preferred payment method and deposit funds to your account
-            </p>
-          </div>
+    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 pb-24">
+      
+      {/* Header Banner */}
+      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl flex items-center gap-4">
+        <div className="w-14 h-14 rounded-2xl bg-emerald-500/25 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-inner">
+          <ArrowDownLeft className="w-7 h-7" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-white tracking-tight">Make a Deposit</h2>
+          <p className="text-slate-400 text-sm mt-0.5">
+            Choose your preferred payment method and securely fund your trading account
+          </p>
         </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* Deposit Form */}
+        
+        {/* Deposit Form Section */}
         <div className="lg:col-span-2 space-y-6">
+          
           {/* Amount Input */}
-          <div className="glass-card p-6">
-            <label className="block text-sm font-medium text-black mb-4">
+          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-4">
+            <label className="block text-sm font-semibold text-white tracking-wide">
               Deposit Amount (USD)
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gold text-xl font-bold">$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 text-xl font-extrabold">$</span>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                placeholder="Enter amount (min $100)"
-                className="input-trading w-full pl-10 pr-4 py-4 text-xl"
+                placeholder="0.00"
+                className="w-full bg-slate-950/60 border border-white/10 rounded-2xl pl-10 pr-4 py-4 text-xl text-white placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-all font-semibold"
                 min="100"
               />
             </div>
-            <p className="text-xs text-gray-600 mt-2">
-              Minimum deposit: $100.00
+            <p className="text-xs text-slate-400">
+              Minimum deposit amount is <span className="text-white font-bold">$100.00</span>
             </p>
           </div>
 
-          {/* ✅ NEW: Transaction Hash Input */}
-          <div className="glass-card p-6 border-gold/30">
-            <label className="block text-sm font-medium text-black mb-4 flex items-center gap-2">
-              <Hash className="w-4 h-4 text-gold" />
+          {/* Transaction Hash Input */}
+          <div className="rounded-3xl bg-slate-900/80 border border-purple-500/30 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-4">
+            <label className="block text-sm font-semibold text-white tracking-wide flex items-center gap-2">
+              <Hash className="w-4 h-4 text-purple-400" />
               Transaction ID / Hash
             </label>
             <div className="relative">
@@ -161,26 +161,23 @@ const DepositsPage = () => {
                 type="text"
                 value={transactionHash}
                 onChange={(e) => setTransactionHash(e.target.value)}
-                placeholder={`Enter your ${selectedMethod} transaction ID from your wallet`}
-                className="input-trading w-full px-4 py-4"
+                placeholder={`Enter your ${selectedMethod} transaction hash`}
+                className="w-full bg-slate-950/60 border border-white/10 rounded-2xl px-4 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-all text-sm font-mono"
               />
             </div>
-            <div className="mt-3 p-3 bg-navy-50 rounded-lg">
-              <div className="flex items-start gap-2">
-                <Info className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-gray-600">
-                  After sending {selectedMethodData?.symbol} from your wallet, paste the 
-                  <strong className="text-white"> Transaction ID (TxID)</strong> or 
-                  <strong className="text-white"> Transaction Hash</strong> here. 
-                  This helps our team verify your deposit quickly.
-                </p>
-              </div>
+            <div className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-2xl flex items-start gap-3">
+              <Info className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-purple-200/90 leading-relaxed">
+                After completing the transfer from your crypto wallet, paste your 
+                <strong className="text-white font-semibold"> Transaction ID (TxID)</strong> or 
+                <strong className="text-white font-semibold"> Transaction Hash</strong> above to fast-track verification.
+              </p>
             </div>
           </div>
 
-          {/* Payment Methods */}
-          <div className="glass-card p-6">
-            <label className="block text-sm font-medium text-black mb-4">
+          {/* Payment Methods Grid */}
+          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-4">
+            <label className="block text-sm font-semibold text-white tracking-wide">
               Select Payment Method
             </label>
             <div className="grid sm:grid-cols-3 gap-4">
@@ -189,84 +186,84 @@ const DepositsPage = () => {
                   key={method.id}
                   onClick={() => {
                     setSelectedMethod(method.id);
-                    setTransactionHash(''); // ✅ NEW: Clear transaction hash when method changes
+                    setTransactionHash('');
                   }}
-                  className={`p-4 rounded-xl border-2 transition-all ${
+                  className={`p-5 rounded-2xl border transition-all text-center flex flex-col items-center cursor-pointer ${
                     selectedMethod === method.id
-                      ? 'border-gold bg-gold/10'
-                      : 'border-border hover:border-gold/50'
+                      ? 'border-purple-500 bg-purple-500/15 shadow-lg shadow-purple-500/10'
+                      : 'border-white/10 bg-slate-950/40 hover:border-white/20 hover:bg-white/5'
                   }`}
                 >
-                  <div className={`w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br ${method.color} flex items-center justify-center text-2xl`}>
+                  <div className={`w-12 h-12 mb-3 rounded-2xl bg-gradient-to-br ${method.color} flex items-center justify-center text-2xl shadow-md text-white font-bold`}>
                     {method.icon}
                   </div>
-                  <p className="text-black font-medium text-sm">{method.name}</p>
-                  <p className="text-gray-600 text-xs">{method.network}</p>
+                  <p className="text-white font-bold text-sm">{method.name}</p>
+                  <p className="text-slate-400 text-xs mt-0.5">{method.network}</p>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Wallet Address */}
+          {/* Wallet Address Display Card */}
           {currentAddress && (
-            <div className="glass-card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <label className="text-sm font-medium text-black">
+            <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-6">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-semibold text-white">
                   {selectedMethodData?.name} Deposit Address
                 </label>
                 <button
                   onClick={() => setShowQR(!showQR)}
-                  className="text-gold text-sm hover:underline flex items-center gap-1"
+                  className="text-purple-400 text-xs font-semibold hover:underline flex items-center gap-1.5 cursor-pointer bg-purple-500/10 px-3 py-1.5 rounded-xl border border-purple-500/20"
                 >
                   <QrCode className="w-4 h-4" />
-                  {showQR ? 'Hide QR' : 'Show QR'}
+                  {showQR ? 'Hide QR' : 'Show QR Code'}
                 </button>
               </div>
 
-              {/* QR Code Display */}
+              {/* QR Code Container */}
               {showQR && (
-                <div className="mb-6 p-6 bg-navy-50 rounded-xl flex justify-center">
-                  <div className="text-center">
-                    <div className="w-48 h-48 bg-navy flex items-center justify-center mb-2">
-                      <img src={walletAddresses?.[selectedMethod as keyof WalletAddresses]?.qrCode} alt={`${selectedMethod} QR Code`} className="w-40 h-40" />
-                      
+                <div className="p-6 bg-slate-950/80 border border-white/10 rounded-2xl flex justify-center animate-in fade-in duration-200">
+                  <div className="text-center space-y-2">
+                    <div className="w-44 h-44 bg-white p-3 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
+                      <img src={walletAddresses?.[selectedMethod as keyof WalletAddresses]?.qrCode} alt={`${selectedMethod} QR Code`} className="w-full h-full object-contain" />
                     </div>
-                    <p className="text-navy text-xs">Scan to deposit {selectedMethodData?.symbol}</p>
+                    <p className="text-slate-400 text-xs font-medium">Scan QR to send {selectedMethodData?.symbol}</p>
                   </div>
                 </div>
               )}
 
-              {/* Address */}
+              {/* Address Bar */}
               <div className="flex items-center gap-3">
-                <div className="flex-1 p-4 bg-navy-50 rounded-lg">
-                  <p className="text-white font-mono text-sm break-all">
+                <div className="flex-1 p-4 bg-slate-950/60 border border-white/10 rounded-2xl">
+                  <p className="text-white font-mono text-xs sm:text-sm break-all">
                     {currentAddress.address}
                   </p>
                 </div>
                 <button
                   onClick={handleCopyAddress}
-                  className="p-4 bg-gold/10 hover:bg-gold/20 rounded-lg transition-colors"
+                  className="p-4 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-2xl transition-colors cursor-pointer text-purple-300 flex-shrink-0"
                   title="Copy address"
                 >
                   {copied ? (
-                    <Check className="w-5 h-5 text-success" />
+                    <Check className="w-5 h-5 text-emerald-400" />
                   ) : (
-                    <Copy className="w-5 h-5 text-gold" />
+                    <Copy className="w-5 h-5" />
                   )}
                 </button>
               </div>
 
-              <div className="mt-4 p-4 bg-navy-50 rounded-lg">
+              {/* Instructions Box */}
+              <div className="p-4 bg-slate-950/60 border border-white/10 rounded-2xl">
                 <div className="flex items-start gap-3">
-                  <Info className="w-5 h-5 text-gold flex-shrink-0 mt-0.5" />
-                  <div className="text-sm text-gray-600">
-                    <p className="text-white font-medium mb-1">Important:</p>
-                    <ul className="space-y-1 list-disc list-inside">
-                      <li>Send only {selectedMethodData?.symbol} to this address</li>
-                      <li>Minimum deposit: ${selectedMethodData?.minAmount}</li>
-                      <li>Processing time: {selectedMethodData?.processingTime}</li>
-                      <li>Deposits will be credited after network confirmations</li>
-                      <li className="text-gold">Don't forget to paste your Transaction ID above!</li>
+                  <Info className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs text-slate-300 space-y-1.5">
+                    <p className="text-white font-semibold">Important Deposit Guidelines:</p>
+                    <ul className="space-y-1 list-disc list-inside text-slate-400">
+                      <li>Send only <span className="text-white font-medium">{selectedMethodData?.symbol}</span> to this specific address.</li>
+                      <li>Minimum deposit: <span className="text-white font-medium">${selectedMethodData?.minAmount}</span>.</li>
+                      <li>Processing time: <span className="text-white font-medium">{selectedMethodData?.processingTime}</span>.</li>
+                      <li>Credits apply automatically after network node validations.</li>
+                      <li className="text-purple-300 font-medium">Ensure you supply your correct Transaction Hash before submitting.</li>
                     </ul>
                   </div>
                 </div>
@@ -277,13 +274,13 @@ const DepositsPage = () => {
           {/* Submit Button */}
           <Button
             onClick={handleSubmitDeposit}
-            className="w-full btn-success py-4"
-            disabled={loading || !amount || !transactionHash.trim()} // ✅ NEW: Disable if no transaction hash
+            className="w-full py-4 text-base font-bold rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-600/25 border border-emerald-500/30 transition-all cursor-pointer disabled:opacity-50"
+            disabled={loading || !amount || !transactionHash.trim()}
           >
             {loading ? (
               <span className="flex items-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                Processing...
+                Processing Request...
               </span>
             ) : (
               <>
@@ -292,63 +289,66 @@ const DepositsPage = () => {
               </>
             )}
           </Button>
+
         </div>
 
-        {/* Sidebar Info */}
+        {/* Sidebar Panel */}
         <div className="space-y-6">
-          {/* Deposit Info */}
-          <div className="glass-card p-6">
-            <h3 className="text-lg font-semibold text-black mb-4">Deposit Information</h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm">Selected Method</span>
-                <span className="text-black font-medium">{selectedMethodData?.name}</span>
+          
+          {/* Quick Specifications */}
+          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
+            <h3 className="text-base font-bold text-white tracking-tight">Deposit Specs</h3>
+            <div className="space-y-3 pt-2 divide-y divide-white/5">
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-slate-400 text-xs">Asset</span>
+                <span className="text-white font-semibold text-xs">{selectedMethodData?.name}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm">Network</span>
-                <span className="text-black font-medium">{selectedMethodData?.network}</span>
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-slate-400 text-xs">Network</span>
+                <span className="text-white font-semibold text-xs">{selectedMethodData?.network}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm">Min. Amount</span>
-                <span className="text-black font-medium">${selectedMethodData?.minAmount}</span>
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-slate-400 text-xs">Minimum Limit</span>
+                <span className="text-white font-semibold text-xs">${selectedMethodData?.minAmount}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm">Processing Time</span>
-                <span className="text-black font-medium">{selectedMethodData?.processingTime}</span>
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-slate-400 text-xs">Avg. Time</span>
+                <span className="text-white font-semibold text-xs">{selectedMethodData?.processingTime}</span>
               </div>
             </div>
           </div>
 
           {/* Security Notice */}
-          <div className="glass-card p-6 border-gold/30">
+          <div className="rounded-3xl bg-amber-500/10 border border-amber-500/20 p-6 shadow-xl backdrop-blur-xl">
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-gold flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-black font-medium mb-2">Security Notice</h4>
-                <p className="text-sm text-gray-600">
-                  Always double-check the deposit address before sending funds. 
-                  Vellumtrade will never ask you to send funds to a different address.
+                <h4 className="text-amber-200 font-semibold text-sm mb-1">Security Alert</h4>
+                <p className="text-xs text-amber-300/80 leading-relaxed">
+                  Always verify the target deposit address string before authorization. Platform admins will never request fund transfers to private personal addresses.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Need Help */}
-          <div className="glass-card p-6">
-            <h3 className="text-lg font-semibold text-black mb-2">Need Help?</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Contact our support team if you have any questions about deposits.
+          {/* Help & Support Card */}
+          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl space-y-3">
+            <h3 className="text-base font-bold text-white tracking-tight">Need Assistance?</h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Encountering verification delays or transaction glitches? Reach out to support directly.
             </p>
             <a 
               href="https://wa.me/15742384154" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-gold hover:underline text-sm"
+              className="inline-block text-purple-400 hover:text-purple-300 text-xs font-bold pt-1 transition-colors"
             >
               Contact Support →
             </a>
           </div>
+
         </div>
+
       </div>
     </div>
   );

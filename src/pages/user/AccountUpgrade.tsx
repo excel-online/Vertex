@@ -11,7 +11,7 @@ const upgradeTiers = [
     price: 100,
     minDeposit: 100,
     referralBonus: 3,
-    color: 'from-gray-500 to-gray-600',
+    color: 'from-slate-500 to-zinc-600',
     features: [
       'Low Trade Returns',
       'Basic Support',
@@ -26,7 +26,7 @@ const upgradeTiers = [
     price: 5000,
     minDeposit: 5000,
     referralBonus: 5,
-    color: 'from-amber-500 to-amber-600',
+    color: 'from-amber-500 to-yellow-600',
     popular: true,
     features: [
       'No Risk Management',
@@ -43,7 +43,7 @@ const upgradeTiers = [
     price: 20000,
     minDeposit: 20000,
     referralBonus: 7,
-    color: 'from-blue-500 to-blue-600',
+    color: 'from-blue-500 to-indigo-600',
     features: [
       'No Risk Management',
       '24/7 Premium Support',
@@ -59,7 +59,7 @@ const upgradeTiers = [
     price: 50000,
     minDeposit: 50000,
     referralBonus: 8,
-    color: 'from-purple-500 to-purple-600',
+    color: 'from-purple-500 to-pink-600',
     features: [
       'Free Training',
       'Encrypted MT4 Robot',
@@ -107,45 +107,44 @@ const AccountUpgrade = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 pb-24">
+      
       {/* Current Tier Banner */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 text-white">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <p className="text-blue-200 text-sm mb-1">Current Package</p>
-            <h2 className="text-3xl font-bold">{currentTier}</h2>
+      <div className="rounded-3xl bg-gradient-to-r from-purple-900/60 via-slate-900/80 to-blue-900/60 border border-purple-500/30 p-6 sm:p-8 shadow-xl backdrop-blur-xl flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+          <p className="text-purple-300 text-xs font-semibold uppercase tracking-wider mb-1">Current Package Tier</p>
+          <h2 className="text-3xl font-extrabold text-white tracking-tight">{currentTier}</h2>
+        </div>
+        <div className="flex items-center gap-6">
+          <div className="text-left md:text-right">
+            <p className="text-slate-400 text-xs font-medium">Total Deposited</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">${user?.totalDeposited?.toLocaleString() || 0}</p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-blue-200 text-sm">Total Deposited</p>
-              <p className="text-2xl font-bold">${user?.totalDeposited?.toLocaleString() || 0}</p>
-            </div>
-            <div className="w-16 h-16 bg-navy-50/20 rounded-xl flex items-center justify-center">
-              <Crown className="w-8 h-8" />
-            </div>
+          <div className="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner flex-shrink-0">
+            <Crown className="w-7 h-7" />
           </div>
         </div>
       </div>
 
-      {/* Benefits */}
-      <div className="grid md:grid-cols-4 gap-4">
+      {/* Benefits Grid */}
+      <div className="grid md:grid-cols-4 gap-6">
         {benefits.map((benefit, index) => {
           const Icon = benefit.icon;
           return (
-            <div key={index} className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Icon className="w-6 h-6 text-blue-600" />
+            <div key={index} className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 text-center shadow-xl backdrop-blur-xl flex flex-col items-center">
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center mb-4 text-purple-400">
+                <Icon className="w-6 h-6" />
               </div>
-              <h4 className="font-semibold text-gray-800 mb-1">{benefit.title}</h4>
-              <p className="text-gray-500 text-sm">{benefit.desc}</p>
+              <h4 className="font-bold text-white text-base mb-1">{benefit.title}</h4>
+              <p className="text-slate-400 text-xs">{benefit.desc}</p>
             </div>
           );
         })}
       </div>
 
-      {/* Upgrade Tiers */}
-      <div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-6">Choose Your Upgrade</h3>
+      {/* Upgrade Tiers Section */}
+      <div className="space-y-6">
+        <h3 className="text-xl font-bold text-white tracking-tight">Choose Your Upgrade</h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {upgradeTiers.map((tier, index) => {
             const isCurrent = tier.name === currentTier;
@@ -155,67 +154,69 @@ const AccountUpgrade = () => {
               <div
                 key={tier.id}
                 onClick={() => !isCurrent && !isLocked && setSelectedTier(tier.id)}
-                className={`relative bg-navy-50 rounded-xl shadow-sm border-2 transition-all ${
+                className={`relative rounded-3xl bg-slate-900/80 border transition-all shadow-xl backdrop-blur-xl flex flex-col justify-between overflow-hidden ${
                   isCurrent
-                    ? 'border-green-500'
+                    ? 'border-emerald-500/50 bg-emerald-500/[0.03]'
                     : isLocked
-                    ? 'border-gray-200 opacity-60 cursor-not-allowed'
+                    ? 'border-white/5 opacity-50 cursor-not-allowed'
                     : selectedTier === tier.id
-                    ? 'border-blue-500 shadow-lg'
-                    : 'border-gray-200 hover:border-blue-300 cursor-pointer'
+                    ? 'border-purple-500 ring-2 ring-purple-500/20 bg-purple-500/[0.05]'
+                    : 'border-white/10 hover:border-purple-500/40 cursor-pointer hover:bg-white/[0.02]'
                 }`}
               >
                 {tier.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-amber-500 text-white text-sm font-semibold rounded-full">
-                    Most Popular
+                  <div className="absolute top-4 right-4 px-3 py-1 bg-amber-500/20 border border-amber-500/30 text-amber-400 text-xs font-bold rounded-full">
+                    Popular
                   </div>
                 )}
 
                 {isCurrent && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-green-500 text-white text-sm font-semibold rounded-full">
-                    Current
+                  <div className="absolute top-4 right-4 px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-bold rounded-full">
+                    Active
                   </div>
                 )}
 
-                <div className={`h-2 rounded-t-xl bg-gradient-to-r ${tier.color}`}></div>
+                <div className={`h-2.5 w-full bg-gradient-to-r ${tier.color}`}></div>
                 
-                <div className="p-6">
-                  <h4 className="text-xl font-bold text-gray-800 mb-2">{tier.name}</h4>
-                  <div className="mb-4">
-                    <span className="text-3xl font-bold text-blue-600">${tier.minDeposit.toLocaleString()}</span>
-                    <span className="text-gray-500">+ min</span>
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
+                  <div className="space-y-4">
+                    <h4 className="text-xl font-bold text-white">{tier.name}</h4>
+                    
+                    <div>
+                      <span className="text-3xl font-extrabold text-white">${tier.minDeposit.toLocaleString()}</span>
+                      <span className="text-slate-400 text-xs ml-1.5">min deposit</span>
+                    </div>
+
+                    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                      +{tier.referralBonus}% Referral Bonus
+                    </div>
+
+                    <ul className="space-y-2.5 pt-2">
+                      {tier.features.map((feature, i) => (
+                        <li key={i} className="flex items-center gap-2.5 text-xs text-slate-300">
+                          <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                          {feature}
+                        </li>
+                      ))}
+                      {tier.notIncluded.map((feature, i) => (
+                        <li key={`not-${i}`} className="flex items-center gap-2.5 text-xs text-slate-600 line-through">
+                          <span className="w-4 h-4 flex-shrink-0 text-center font-bold">×</span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  <div className="mb-4">
-                    <span className="text-green-600 font-semibold">{tier.referralBonus}%</span>
-                    <span className="text-gray-500 text-sm"> Referral Bonus</span>
-                  </div>
-
-                  <ul className="space-y-2 mb-6">
-                    {tier.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
-                        <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                    {tier.notIncluded.map((feature, i) => (
-                      <li key={`not-${i}`} className="flex items-center gap-2 text-sm text-gray-400 line-through">
-                        <span className="w-4 h-4 flex-shrink-0">×</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className={`w-full py-3 rounded-lg font-medium text-center transition-colors ${
+                  <div className={`w-full py-3 rounded-2xl font-bold text-xs text-center transition-all ${
                     isCurrent
-                      ? 'bg-green-100 text-green-700'
+                      ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
                       : isLocked
-                      ? 'bg-gray-100 text-gray-400'
+                      ? 'bg-white/5 border border-white/5 text-slate-600 cursor-not-allowed'
                       : selectedTier === tier.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/25 border border-purple-500/30'
+                      : 'bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white'
                   }`}>
-                    {isCurrent ? 'Current Plan' : isLocked ? 'Locked' : selectedTier === tier.id ? 'Selected' : 'Select'}
+                    {isCurrent ? 'Current Plan' : isLocked ? 'Locked' : selectedTier === tier.id ? 'Selected' : 'Select Tier'}
                   </div>
                 </div>
               </div>
@@ -224,32 +225,32 @@ const AccountUpgrade = () => {
         </div>
       </div>
 
-      {/* Upgrade Action */}
+      {/* Upgrade Action Card */}
       {selectedTier && (
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="rounded-3xl bg-slate-900/80 border border-purple-500/40 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-6 animate-in fade-in duration-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <p className="text-gray-600">Selected Package</p>
-              <p className="text-xl font-bold text-gray-800">
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Selected Package</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">
                 {upgradeTiers.find(t => t.id === selectedTier)?.name}
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-gray-600">Minimum Deposit Required</p>
-              <p className="text-2xl font-bold text-blue-600">
+            <div className="text-left md:text-right">
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Minimum Required Capital</p>
+              <p className="text-2xl font-extrabold text-purple-400 mt-0.5">
                 ${upgradeTiers.find(t => t.id === selectedTier)?.minDeposit.toLocaleString()}
               </p>
             </div>
           </div>
           <Button
             onClick={handleUpgrade}
-            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-4"
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-purple-600/25 border border-purple-500/30 transition-all cursor-pointer"
             disabled={isProcessing}
           >
             {isProcessing ? (
               <span className="flex items-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                Processing...
+                Processing Upgrade...
               </span>
             ) : (
               <>
@@ -261,21 +262,19 @@ const AccountUpgrade = () => {
         </div>
       )}
 
-      {/* Info */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Star className="w-5 h-5 text-blue-600" />
-          </div>
-          <div>
-            <h4 className="font-semibold text-blue-800 mb-1">Why Upgrade?</h4>
-            <p className="text-blue-700 text-sm">
-              Higher tiers unlock better returns, priority support, and exclusive features. 
-              Your investment tier is automatically determined based on your total deposited amount.
-            </p>
-          </div>
+      {/* Information Banner */}
+      <div className="rounded-3xl bg-purple-500/10 border border-purple-500/20 p-6 sm:p-8 flex items-start gap-5 backdrop-blur-xl">
+        <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center flex-shrink-0 text-purple-400">
+          <Star className="w-6 h-6" />
+        </div>
+        <div className="space-y-1">
+          <h4 className="font-bold text-purple-200 text-base">Why Upgrade Your Tier?</h4>
+          <p className="text-xs sm:text-sm text-purple-300/80 leading-relaxed">
+            Higher tier levels unlock elite trading returns, priority withdrawal processing speeds, personal managers, and exclusive investment insights. Your package status automatically scales based on cumulative equity.
+          </p>
         </div>
       </div>
+
     </div>
   );
 };

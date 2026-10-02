@@ -16,6 +16,10 @@ import {
   Users,
   Crown,
   Briefcase,
+  Eye,
+  EyeOff,
+  Send,
+  PlusCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -87,11 +91,11 @@ const TradingViewChart = ({
           href={`https://www.tradingview.com/symbols/${symbol}/`}
           rel="noopener nofollow"
           target="_blank"
-          className="text-blue-400 hover:underline"
+          className="text-purple-400 hover:underline"
         >
           {symbol} Chart
         </a>
-        <span className="text-gray-500"> by TradingView</span>
+        <span className="text-gray-400"> by TradingView</span>
       </div>
     </div>
   );
@@ -122,7 +126,7 @@ const TradingViewTicker = () => {
       ],
       "showSymbolLogo": true,
       "colorTheme": "dark",
-      "isTransparent": false,
+      "isTransparent": true,
       "displayMode": "adaptive",
       "locale": "en"
     });
@@ -137,7 +141,7 @@ const TradingViewTicker = () => {
   }, []);
 
   return (
-    <div className="tradingview-widget-container w-full" ref={containerRef}>
+    <div className="tradingview-widget-container w-full my-4 rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 backdrop-blur-md shadow-lg" ref={containerRef}>
       <div className="tradingview-widget-container__widget w-full"></div>
     </div>
   );
@@ -149,6 +153,7 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [chartSymbol, setChartSymbol] = useState("AAPL");
   const [chartExchange, setChartExchange] = useState("NASDAQ");
+  const [showBalance, setShowBalance] = useState(true);
 
   useEffect(() => {
     fetchDashboardData();
@@ -171,15 +176,15 @@ const UserDashboard = () => {
   const getTierColor = (tier: string) => {
     switch (tier) {
       case 'VIP':
-        return 'text-purple-600';
+        return 'text-purple-400 bg-purple-500/10 border-purple-500/20';
       case 'Standard':
-        return 'text-blue-600';
+        return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
       case 'Premium':
-        return 'text-amber-600';
+        return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
       case 'Starter':
-        return 'text-gray-600';
+        return 'text-slate-300 bg-slate-500/10 border-slate-500/20';
       default:
-        return 'text-gray-500';
+        return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
     }
   };
 
@@ -192,242 +197,234 @@ const UserDashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 pb-8">
-      {/* Profile Header Card */}
-      <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6">
-          <div className="flex flex-col md:flex-row md:items-center gap-6">
-            {/* Avatar */}
-            <div className="relative">
-              <div className="w-24 h-24 rounded-full bg-navy-50 flex items-center justify-center border-4 border-white shadow-lg">
-                <span className="text-3xl font-bold text-blue-600">
-                  {user?.firstName?.[0]}{user?.lastName?.[0]}
-                </span>
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto px-4 sm:px-6">
+      
+      {/* Top Greeting & Header Bar (Inspired by fintech design) */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-md ring-2 ring-purple-500/30">
+            {user?.firstName?.[0]}{user?.lastName?.[0]}
+          </div>
+          <div>
+            <p className="text-slate-400 text-xs uppercase tracking-wider font-medium">Welcome back</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+              Hi, {user?.firstName || 'Trader'}
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                <CheckCircle className="w-3 h-3 mr-1" /> Verified
+              </span>
+            </h1>
+          </div>
+        </div>
+
+        {/* Action Header Pills / Earn badge */}
+        <div className="flex items-center gap-3">
+          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-2xl shadow-lg flex items-center gap-2 font-semibold text-sm">
+            <Gift className="w-4 h-4 text-purple-200" />
+            Bonus ${user?.bonusBalance?.toLocaleString() || '0.00'}
+          </div>
+        </div>
+      </div>
+
+      {/* TradingView Ticker Widget */}
+      <TradingViewTicker />
+
+      {/* Balance & Account Overview Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Main Balance Card */}
+        <div className="lg:col-span-2 relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-indigo-950/60 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl">
+          <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-slate-400 text-sm font-medium tracking-wide">Total Balance</span>
+            <button 
+              onClick={() => setShowBalance(!showBalance)}
+              className="text-slate-400 hover:text-white transition-colors p-1"
+              aria-label="Toggle balance visibility"
+            >
+              {showBalance ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+            </button>
+          </div>
+
+          <div className="flex items-baseline gap-3 mb-6">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              {showBalance ? `$${dashboardData?.user.totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}` : '••••••••'}
+            </h2>
+            <span className="text-emerald-400 text-sm font-medium flex items-center bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/20">
+              <TrendingUp className="w-3.5 h-3.5 mr-1" /> Ready
+            </span>
+          </div>
+
+          {/* Quick Dual-Wallet Look (Inspired by reference) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
+            <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-xs">Total Deposited</p>
+                <p className="text-white font-bold text-lg mt-0.5">
+                  {showBalance ? `$${dashboardData?.user.totalDeposited.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}` : '••••'}
+                </p>
               </div>
-              <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
-                <CheckCircle className="w-4 h-4 text-white" />
+              <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                <ArrowDownLeft className="w-5 h-5" />
               </div>
             </div>
 
-            {/* User Info */}
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h2 className="text-2xl font-bold text-white">{user?.firstName} {user?.lastName}</h2>
-                <div className="flex items-center gap-1 bg-yellow-400/20 px-2 py-1 rounded-full">
-                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  <span className="text-yellow-400 text-sm font-medium">Verified</span>
+            <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-xs">Total Earnings</p>
+                <p className="text-white font-bold text-lg mt-0.5">
+                  {showBalance ? `$${dashboardData?.user.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}` : '••••'}
+                </p>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Action Hub */}
+        <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl flex flex-col justify-between">
+          <div>
+            <h3 className="text-white font-semibold text-base mb-4">Quick Actions</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <NavLink to="/dashboard/deposits" className="group">
+                <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                    <ArrowDownLeft className="w-6 h-6" />
+                  </div>
+                  <span className="text-white text-sm font-medium">Deposit</span>
                 </div>
-              </div>
-              <div className="flex items-center gap-4 text-blue-100">
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
-                  {user?.country || 'Not specified'}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Briefcase className="w-4 h-4" />
-                  {user?.accountType || 'CryptoCurrency Investment'}
-                </span>
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="flex flex-wrap gap-3">
-              <NavLink to="/dashboard/deposits">
-                <Button className="bg-green-600 hover:bg-green-700 text-white px-6">
-                  <ArrowDownLeft className="w-4 h-4 mr-2" />
-                  Deposit
-                </Button>
               </NavLink>
-              <NavLink to="/dashboard/withdrawals">
-                <Button className="bg-red-600 hover:bg-red-700 text-white px-6">
-                  <ArrowUpRight className="w-4 h-4 mr-2" />
-                  Withdraw
-                </Button>
+
+              <NavLink to="/dashboard/withdrawals" className="group">
+                <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                    <ArrowUpRight className="w-6 h-6" />
+                  </div>
+                  <span className="text-white text-sm font-medium">Withdraw</span>
+                </div>
+              </NavLink>
+
+              <NavLink to="/dashboard/history" className="group">
+                <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                    <History className="w-6 h-6" />
+                  </div>
+                  <span className="text-white text-sm font-medium">History</span>
+                </div>
+              </NavLink>
+
+              <NavLink to="/dashboard/settings" className="group">
+                <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                    <Settings className="w-6 h-6" />
+                  </div>
+                  <span className="text-white text-sm font-medium">Settings</span>
+                </div>
               </NavLink>
             </div>
           </div>
+
+          <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+            <span>Account Type</span>
+            <span className="text-purple-400 font-medium">{user?.accountType || 'Investment'}</span>
+          </div>
         </div>
+
       </div>
 
-      {/* Balance Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-              <Wallet className="w-6 h-6 text-blue-600" />
-            </div>
-            <span className="text-sm text-gray-500">Total Balance</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-800">
-            ${dashboardData?.user.totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}
-          </p>
-          <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" />
-            Available for withdrawal
-          </p>
-        </div>
-
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-              <ArrowDownLeft className="w-6 h-6 text-green-600" />
-            </div>
-            <span className="text-sm text-gray-500">Total Deposit</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-800">
-            ${dashboardData?.user.totalDeposited.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}
-          </p>
-          <p className="text-xs text-gray-400 mt-1">Lifetime deposits</p>
-        </div>
-
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Gift className="w-6 h-6 text-amber-600" />
-            </div>
-            <span className="text-sm text-gray-500">Total Bonus</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-800">
-            ${dashboardData?.user.bonusBalance.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}
-          </p>
-          <p className="text-xs text-gray-400 mt-1">Referral & promo bonuses</p>
-        </div>
-
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-purple-600" />
-            </div>
-            <span className="text-sm text-gray-500">Total Earning</span>
-          </div>
-          <p className="text-2xl font-bold text-gray-800">
-            ${dashboardData?.user.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}
-          </p>
-          <p className="text-xs text-gray-400 mt-1">From investments</p>
-        </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <NavLink to="/dashboard/history">
-          <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6 hover:border-blue-300 transition-colors cursor-pointer group">
-            <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-              <History className="w-6 h-6 text-blue-600" />
-            </div>
-            <p className="font-semibold text-gray-800">Trading History</p>
-            <p className="text-sm text-gray-500">View your trades</p>
-          </div>
-        </NavLink>
-
-        <NavLink to="/dashboard/settings">
-          <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6 hover:border-blue-300 transition-colors cursor-pointer group">
-            <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center mb-4 group-hover:bg-gray-200 transition-colors">
-              <Settings className="w-6 h-6 text-gray-600" />
-            </div>
-            <p className="font-semibold text-gray-800">Settings</p>
-            <p className="text-sm text-gray-500">Manage account</p>
-          </div>
-        </NavLink>
-
-        <NavLink to="/dashboard/transactions" className="col-span-2">
-          <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6 hover:border-blue-300 transition-colors cursor-pointer group h-full">
-            <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
-              <Receipt className="w-6 h-6 text-green-600" />
-            </div>
-            <p className="font-semibold text-gray-800">View Transactions</p>
-            <p className="text-sm text-gray-500">All transactions</p>
-          </div>
-        </NavLink>
-
-        {/* 
-        <NavLink to="/dashboard/signals">
-          <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6 hover:border-blue-300 transition-colors cursor-pointer group">
-            <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center mb-4 group-hover:bg-amber-200 transition-colors">
-              <BarChart3 className="w-6 h-6 text-amber-600" />
-            </div>
-            <p className="font-semibold text-gray-800">Signal Purchase</p>
-            <p className="text-sm text-gray-500">Buy trading signals</p>
-          </div>
-        </NavLink>
-        */}
-      </div>
-
-      {/* Info Cards */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Account Info */}
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-6">Account Information</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-3 border-b border-gray-100">
+      {/* Account Details & Live Chart Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Account Information Panel */}
+        <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
+          <h3 className="text-lg font-bold text-white mb-2">Account Overview</h3>
+          
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
               <div className="flex items-center gap-3">
-                <Crown className="w-5 h-5 text-amber-500" />
-                <span className="text-gray-600">Package</span>
+                <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                  <Crown className="w-4 h-4" />
+                </div>
+                <span className="text-slate-300 text-sm">Package Tier</span>
               </div>
-              <span className={`font-semibold ${getTierColor(user?.investmentTier || 'None')}`}>
-                {user?.investmentTier || 'None'}
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getTierColor(user?.investmentTier || 'None')}`}>
+                {user?.investmentTier || 'Starter'}
               </span>
             </div>
-            <div className="flex items-center justify-between py-3 border-b border-gray-100">
+
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
               <div className="flex items-center gap-3">
-                <BarChart3 className="w-5 h-5 text-blue-500" />
-                <span className="text-gray-600">Signal</span>
+                <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <span className="text-slate-300 text-sm">Country</span>
               </div>
-              <span className="font-semibold text-green-600">Active</span>
+              <span className="text-white font-medium text-sm">{user?.country || 'Not specified'}</span>
             </div>
-            <div className="flex items-center justify-between py-3 border-b border-gray-100">
+
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
               <div className="flex items-center gap-3">
-                <Users className="w-5 h-5 text-purple-500" />
-                <span className="text-gray-600">Total Referrals</span>
+                <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
+                <span className="text-slate-300 text-sm">Total Referrals</span>
               </div>
-              <span className="font-semibold text-gray-800">{user?.referralCount || 0}</span>
+              <span className="text-white font-semibold text-sm">{user?.referralCount || 0}</span>
             </div>
-            <div className="flex items-center justify-between py-3 border-b border-gray-100">
+
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
               <div className="flex items-center gap-3">
-                <Briefcase className="w-5 h-5 text-gray-500" />
-                <span className="text-gray-600">Account Type</span>
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4" />
+                </div>
+                <span className="text-slate-300 text-sm">Verification Status</span>
               </div>
-              <span className="font-semibold text-gray-800">{user?.accountType || 'Investment'}</span>
-            </div>
-            <div className="flex items-center justify-between py-3">
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-gray-600">Account Status</span>
-              </div>
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+              <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-semibold">
                 Verified
               </span>
             </div>
           </div>
         </div>
 
-        {/* Live TradingView Chart */}
-        <div className="bg-[#131722] rounded-xl shadow-sm border border-gray-200 overflow-hidden relative">
-          <div className="absolute top-3 right-3 z-20 flex gap-1">
-            {quickSymbols.map((item) => (
-              <button
-                key={item.symbol}
-                onClick={() => {
-                  setChartSymbol(item.symbol);
-                  setChartExchange(item.exchange);
-                }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                  chartSymbol === item.symbol
-                    ? 'bg-blue-600 text-white shadow-lg'
-                    : 'bg-gray-800/80 text-gray-300 hover:bg-gray-700 backdrop-blur-sm'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
+        {/* Live TradingView Chart Panel */}
+        <div className="lg:col-span-2 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl overflow-hidden flex flex-col">
+          <div className="p-4 sm:p-5 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02]">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-purple-400" />
+              <h3 className="text-white font-semibold text-base">Market Live Chart</h3>
+            </div>
+            
+            {/* Symbol Toggles */}
+            <div className="flex flex-wrap gap-1.5">
+              {quickSymbols.map((item) => (
+                <button
+                  key={item.symbol}
+                  onClick={() => {
+                    setChartSymbol(item.symbol);
+                    setChartExchange(item.exchange);
+                  }}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-xl transition-all ${
+                    chartSymbol === item.symbol
+                      ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                      : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/5'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="h-[400px] w-full">
+
+          <div className="h-[420px] w-full p-2">
             <TradingViewChart 
               symbol={chartSymbol}
               exchange={chartExchange}
@@ -436,32 +433,34 @@ const UserDashboard = () => {
             />
           </div>
         </div>
+
       </div>
 
-      {/* Referral Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl shadow-sm p-6 my-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      {/* Referral Banner Section */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 border border-purple-500/20 p-6 sm:p-8 shadow-2xl">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
-            <h3 className="text-lg font-semibold text-white mb-1">Referral Program</h3>
-            <p className="text-blue-100 text-sm">Invite friends and earn up to 8% referral bonus!</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="bg-navy-50/10 backdrop-blur-sm rounded-lg px-4 py-2">
-              <p className="text-blue-200 text-xs">Your Code</p>
-              <p className="text-white font-mono font-semibold">{user?.referralCode}</p>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-semibold mb-3 border border-purple-500/30">
+              <Gift className="w-3.5 h-3.5" /> Referral Program
             </div>
-            <div className="bg-navy-50/10 backdrop-blur-sm rounded-lg px-4 py-2">
-              <p className="text-blue-200 text-xs">Earned</p>
-              <p className="text-white font-semibold">${user?.referralBonus?.toLocaleString() || 0}</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">Invite friends & earn rewards</h3>
+            <p className="text-slate-300 text-sm max-w-xl">Share your referral code with friends and earn up to 8% bonus on their deposits instantly!</p>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-3 backdrop-blur-md">
+              <p className="text-slate-400 text-xs font-medium">Your Code</p>
+              <p className="text-white font-mono font-bold text-base tracking-wider">{user?.referralCode || 'N/A'}</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-3 backdrop-blur-md">
+              <p className="text-slate-400 text-xs font-medium">Total Earned</p>
+              <p className="text-emerald-400 font-bold text-base">${user?.referralBonus?.toLocaleString() || '0.00'}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* TradingView Ticker Widget at Footer */}
-      <div className="mt-8">
-        <TradingViewTicker />
-      </div>
     </div>
   );
 };

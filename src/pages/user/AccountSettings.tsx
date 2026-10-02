@@ -79,25 +79,26 @@ const AccountSettings = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Profile Header */}
-      <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
+    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 pb-24">
+      
+      {/* Profile Header Card */}
+      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl">
         <div className="flex flex-col md:flex-row md:items-center gap-6">
-          {/* Avatar Upload */}
-          <div className="relative">
-            <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center border-4 border-white shadow-lg">
-              <span className="text-3xl font-bold text-blue-600">
+          {/* Avatar Preview */}
+          <div className="relative flex-shrink-0">
+            <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-purple-500/30 flex items-center justify-center shadow-inner">
+              <span className="text-3xl font-extrabold text-purple-300">
                 {user?.firstName?.[0]}{user?.lastName?.[0]}
               </span>
             </div>
           </div>
           
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-800">{user?.firstName} {user?.lastName}</h2>
-            <p className="text-gray-500">{user?.email}</p>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-1">
-                <CheckCircle className="w-4 h-4" />
+          <div className="flex-1 space-y-1">
+            <h2 className="text-2xl font-extrabold text-white tracking-tight">{user?.firstName} {user?.lastName}</h2>
+            <p className="text-slate-400 text-sm">{user?.email}</p>
+            <div className="flex items-center gap-2 pt-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                <CheckCircle className="w-3.5 h-3.5" />
                 Verified Account
               </span>
             </div>
@@ -105,31 +106,34 @@ const AccountSettings = () => {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Personal Information */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-6">Personal Information</h3>
+      <div className="grid lg:grid-cols-3 gap-8">
+        
+        {/* Main Column: Personal Info & Password Settings */}
+        <div className="lg:col-span-2 space-y-8">
+          
+          {/* Personal Information Form */}
+          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-6">
+            <h3 className="text-lg font-bold text-white tracking-tight">Personal Information</h3>
             
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                   First Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
                     type="text"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className="w-full bg-slate-950/60 border border-white/10 rounded-2xl pl-11 pr-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500/50 transition-all font-medium"
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                   Last Name
                 </label>
                 <input
@@ -137,100 +141,101 @@ const AccountSettings = () => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  className="w-full bg-slate-950/60 border border-white/10 rounded-2xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500/50 transition-all font-medium"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
                   <input
                     type="email"
-                    value={user?.email}
+                    value={user?.email || ''}
                     disabled
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+                    className="w-full bg-slate-950/30 border border-white/5 rounded-2xl pl-11 pr-4 py-3.5 text-slate-500 text-sm cursor-not-allowed"
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                   Username
                 </label>
                 <input
                   type="text"
-                  value={user?.username}
+                  value={user?.username || ''}
                   disabled
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+                  className="w-full bg-slate-950/30 border border-white/5 rounded-2xl px-4 py-3.5 text-slate-500 text-sm cursor-not-allowed"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                   Phone Number
                 </label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
                     type="tel"
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className="w-full bg-slate-950/60 border border-white/10 rounded-2xl pl-11 pr-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500/50 transition-all font-medium"
+                    placeholder="+1..."
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                   Country
                 </label>
                 <div className="relative">
-                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
                     type="text"
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className="w-full bg-slate-950/60 border border-white/10 rounded-2xl pl-11 pr-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500/50 transition-all font-medium"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="mt-6">
+            <div className="pt-2">
               <Button
                 onClick={handleSaveProfile}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+                className="py-3.5 px-6 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/25 border border-purple-500/30 transition-all cursor-pointer"
                 disabled={isLoading}
               >
                 <Save className="w-4 h-4 mr-2" />
-                {isLoading ? 'Saving...' : 'Save Changes'}
+                {isLoading ? 'Saving Changes...' : 'Save Profile Changes'}
               </Button>
             </div>
           </div>
 
-          {/* Change Password */}
-          <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-800">Change Password</h3>
+          {/* Change Password Panel */}
+          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-white tracking-tight">Security & Passwords</h3>
               <Button
                 onClick={() => setIsChangingPassword(!isChangingPassword)}
                 variant="outline"
-                className="border-gray-300 text-gray-700"
+                className="bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white rounded-2xl text-xs font-semibold cursor-pointer"
               >
-                <Lock className="w-4 h-4 mr-2" />
-                {isChangingPassword ? 'Cancel' : 'Change Password'}
+                <Lock className="w-3.5 h-3.5 mr-1.5" />
+                {isChangingPassword ? 'Cancel Edit' : 'Change Password'}
               </Button>
             </div>
 
             {isChangingPassword && (
-              <div className="space-y-4">
+              <div className="space-y-4 pt-2 animate-in fade-in duration-200">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                     Current Password
                   </label>
                   <input
@@ -238,12 +243,12 @@ const AccountSettings = () => {
                     name="currentPassword"
                     value={passwordData.currentPassword}
                     onChange={handlePasswordChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                    placeholder="Enter current password"
+                    className="w-full bg-slate-950/60 border border-white/10 rounded-2xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500/50 transition-all"
+                    placeholder="••••••••••••"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                     New Password
                   </label>
                   <input
@@ -251,12 +256,12 @@ const AccountSettings = () => {
                     name="newPassword"
                     value={passwordData.newPassword}
                     onChange={handlePasswordChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                    placeholder="Enter new password"
+                    className="w-full bg-slate-950/60 border border-white/10 rounded-2xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500/50 transition-all"
+                    placeholder="••••••••••••"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                     Confirm New Password
                   </label>
                   <input
@@ -264,83 +269,88 @@ const AccountSettings = () => {
                     name="confirmPassword"
                     value={passwordData.confirmPassword}
                     onChange={handlePasswordChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                    placeholder="Confirm new password"
+                    className="w-full bg-slate-950/60 border border-white/10 rounded-2xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500/50 transition-all"
+                    placeholder="••••••••••••"
                   />
                 </div>
-                <Button
-                  onClick={handleChangePassword}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                  disabled={isLoading}
-                >
-                  Update Password
-                </Button>
+                <div className="pt-2">
+                  <Button
+                    onClick={handleChangePassword}
+                    className="py-3 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/25 border border-emerald-500/30 transition-all cursor-pointer"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Updating...' : 'Update Password'}
+                  </Button>
+                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Sidebar Info */}
+        {/* Sidebar Info Section */}
         <div className="space-y-6">
-          {/* Account Status */}
-          <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Account Status</h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Status</span>
-                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+          
+          {/* Account Status Card */}
+          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
+            <h3 className="text-base font-bold text-white tracking-tight">Account Metrics</h3>
+            <div className="space-y-3 pt-1 divide-y divide-white/5">
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-slate-400 text-xs">Status</span>
+                <span className="px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-semibold">
                   Active
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Investment Tier</span>
-                <span className="font-semibold text-blue-600">
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-slate-400 text-xs">Investment Tier</span>
+                <span className="font-bold text-purple-400 text-xs">
                   {user?.investmentTier || 'None'}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Account Type</span>
-                <span className="text-gray-800">{user?.accountType}</span>
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-slate-400 text-xs">Account Type</span>
+                <span className="text-white font-medium text-xs">{user?.accountType || 'Standard'}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Currency</span>
-                <span className="text-gray-800">{user?.currencyType}</span>
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-slate-400 text-xs">Base Currency</span>
+                <span className="text-white font-medium text-xs">{user?.currencyType || 'USD'}</span>
               </div>
             </div>
           </div>
 
-          {/* Security */}
-          <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-green-600" />
+          {/* Security Verification Panel */}
+          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <Shield className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-800">Security</h3>
-                <p className="text-sm text-gray-500">Your account is secure</p>
+                <h3 className="font-bold text-white text-sm">Security Guard</h3>
+                <p className="text-xs text-slate-400">Profile fully secured</p>
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-green-600">
-                <CheckCircle className="w-4 h-4" />
-                <span className="text-sm">Two-factor authentication enabled</span>
+            <div className="space-y-2 pt-1">
+              <div className="flex items-center gap-2 text-emerald-400 text-xs">
+                <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                <span>Two-Factor Authentication Active</span>
               </div>
-              <div className="flex items-center gap-2 text-green-600">
-                <CheckCircle className="w-4 h-4" />
-                <span className="text-sm">Email verification completed</span>
+              <div className="flex items-center gap-2 text-emerald-400 text-xs">
+                <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                <span>Primary Email Verified</span>
               </div>
             </div>
           </div>
 
-          {/* Referral Code */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 text-white">
-            <h3 className="font-semibold mb-2">Referral Code</h3>
-            <p className="text-blue-100 text-sm mb-4">Share and earn bonuses!</p>
-            <div className="bg-navy-50/10 backdrop-blur-sm rounded-lg px-4 py-3">
-              <p className="font-mono font-semibold">{user?.referralCode}</p>
+          {/* Referral Code Banner */}
+          <div className="rounded-3xl bg-gradient-to-r from-purple-900/60 via-slate-900/80 to-blue-900/60 border border-purple-500/30 p-6 shadow-xl backdrop-blur-xl space-y-3">
+            <h3 className="font-bold text-white text-base">Your Referral Code</h3>
+            <p className="text-xs text-slate-300">Invite partners and earn platform equity commission bonuses.</p>
+            <div className="bg-slate-950/80 border border-white/10 rounded-2xl px-4 py-3 text-center">
+              <p className="font-mono font-bold text-purple-300 text-sm tracking-wider">{user?.referralCode || 'N/A'}</p>
             </div>
           </div>
+
         </div>
+
       </div>
     </div>
   );

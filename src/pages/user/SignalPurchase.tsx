@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BarChart3, Check, AlertCircle, TrendingUp, Clock, Shield } from 'lucide-react';
+import { BarChart3, Check, AlertCircle, TrendingUp, Clock, Shield, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -15,7 +15,7 @@ const signalPackages = [
       'Entry & Exit points',
       'Email notifications'
     ],
-    color: 'from-blue-500 to-blue-600'
+    color: 'from-blue-500 to-indigo-600'
   },
   {
     id: 'premium',
@@ -29,7 +29,7 @@ const signalPackages = [
       'SMS + Email alerts',
       'Risk management tips'
     ],
-    color: 'from-amber-500 to-amber-600',
+    color: 'from-amber-500 to-orange-600',
     popular: true
   },
   {
@@ -45,7 +45,7 @@ const signalPackages = [
       'Custom strategies',
       'Personal analyst'
     ],
-    color: 'from-purple-500 to-purple-600'
+    color: 'from-purple-500 to-fuchsia-600'
   }
 ];
 
@@ -70,92 +70,100 @@ const SignalPurchase = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 pb-16">
+      
       {/* Info Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-            <BarChart3 className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Professional Trading Signals</h3>
-            <p className="text-gray-600">
-              Get access to our expert trading signals with high accuracy rates. Our team of professional 
-              traders analyzes the market 24/7 to provide you with the best entry and exit points.
-            </p>
-          </div>
+      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div className="w-16 h-16 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center flex-shrink-0 text-blue-400 shadow-inner">
+          <BarChart3 className="w-8 h-8" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-2xl font-bold text-white tracking-tight">Professional Trading Signals</h3>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Get access to our expert trading signals with high accuracy rates. Our team of professional 
+            traders analyzes the market 24/7 to provide you with the best entry and exit points.
+          </p>
         </div>
       </div>
 
-      {/* Benefits */}
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <TrendingUp className="w-6 h-6 text-green-600" />
+      {/* Benefits Grid */}
+      <div className="grid md:grid-cols-3 gap-6">
+        
+        <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl text-center space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto">
+            <TrendingUp className="w-6 h-6" />
           </div>
-          <h4 className="font-semibold text-gray-800 mb-2">High Accuracy</h4>
-          <p className="text-gray-600 text-sm">Our signals have an average success rate of 85%</p>
+          <h4 className="font-bold text-white text-base">High Accuracy</h4>
+          <p className="text-slate-400 text-xs leading-relaxed">Our signals maintain an average success rate of 85% across markets</p>
         </div>
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <Clock className="w-6 h-6 text-blue-600" />
+
+        <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl text-center space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-500/30 text-blue-400 flex items-center justify-center mx-auto">
+            <Clock className="w-6 h-6" />
           </div>
-          <h4 className="font-semibold text-gray-800 mb-2">Real-time Alerts</h4>
-          <p className="text-gray-600 text-sm">Get instant notifications when signals are generated</p>
+          <h4 className="font-bold text-white text-base">Real-time Alerts</h4>
+          <p className="text-slate-400 text-xs leading-relaxed">Get instant notifications the moment new signals are generated</p>
         </div>
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-          <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-6 h-6 text-purple-600" />
+
+        <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl text-center space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-500/30 text-purple-400 flex items-center justify-center mx-auto">
+            <Shield className="w-6 h-6" />
           </div>
-          <h4 className="font-semibold text-gray-800 mb-2">Risk Management</h4>
-          <p className="text-gray-600 text-sm">Each signal includes stop-loss and take-profit levels</p>
+          <h4 className="font-bold text-white text-base">Risk Management</h4>
+          <p className="text-slate-400 text-xs leading-relaxed">Each signal includes calculated stop-loss and take-profit levels</p>
         </div>
+
       </div>
 
-      {/* Packages */}
-      <div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-6">Select a Package</h3>
+      {/* Packages Section */}
+      <div className="space-y-6">
+        <h3 className="text-xl font-bold text-white tracking-tight">Select a Package</h3>
+        
         <div className="grid md:grid-cols-3 gap-6">
           {signalPackages.map((pkg) => (
             <div
               key={pkg.id}
               onClick={() => setSelectedPackage(pkg.id)}
-              className={`relative bg-navy-50 rounded-xl shadow-sm border-2 cursor-pointer transition-all ${
+              className={`relative rounded-3xl bg-slate-900/80 border-2 cursor-pointer transition-all shadow-xl backdrop-blur-xl overflow-hidden flex flex-col justify-between ${
                 selectedPackage === pkg.id
-                  ? 'border-blue-500 shadow-lg'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-purple-500 shadow-purple-500/10 ring-2 ring-purple-500/20'
+                  : 'border-white/10 hover:border-purple-500/40'
               }`}
             >
               {pkg.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-amber-500 text-white text-sm font-semibold rounded-full">
+                <div className="absolute top-4 right-4 px-3 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold rounded-full">
                   Most Popular
                 </div>
               )}
 
-              <div className={`h-2 rounded-t-xl bg-gradient-to-r ${pkg.color}`}></div>
+              <div className={`h-2.5 w-full bg-gradient-to-r ${pkg.color}`}></div>
               
-              <div className="p-6">
-                <h4 className="text-xl font-bold text-gray-800 mb-2">{pkg.name}</h4>
-                <div className="flex items-baseline gap-1 mb-4">
-                  <span className="text-3xl font-bold text-blue-600">${pkg.price}</span>
-                  <span className="text-gray-500">/ {pkg.duration}</span>
+              <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-6">
+                <div>
+                  <h4 className="text-xl font-extrabold text-white mb-2">{pkg.name}</h4>
+                  <div className="flex items-baseline gap-1.5 mb-6">
+                    <span className="text-4xl font-black text-white">${pkg.price}</span>
+                    <span className="text-slate-400 text-sm">/ {pkg.duration}</span>
+                  </div>
+
+                  <ul className="space-y-3.5 border-t border-white/10 pt-6">
+                    {pkg.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-3 text-slate-300 text-sm">
+                        <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-3.5 h-3.5" />
+                        </div>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
-                <ul className="space-y-3 mb-6">
-                  {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-gray-600">
-                      <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className={`w-full py-3 rounded-lg font-medium text-center transition-colors ${
+                <div className={`w-full py-3.5 rounded-2xl font-semibold text-center text-sm transition-all border ${
                   selectedPackage === pkg.id
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-purple-600 text-white border-purple-500 shadow-lg shadow-purple-600/30'
+                    : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
                 }`}>
-                  {selectedPackage === pkg.id ? 'Selected' : 'Select Package'}
+                  {selectedPackage === pkg.id ? 'Selected Package' : 'Select Package'}
                 </div>
               </div>
             </div>
@@ -163,53 +171,56 @@ const SignalPurchase = () => {
         </div>
       </div>
 
-      {/* Purchase Button */}
+      {/* Purchase Checkout Card */}
       {selectedPackage && (
-        <div className="bg-navy-50 rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="rounded-3xl bg-slate-900/80 border border-purple-500/40 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-6 animate-fadeIn">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-white/10 pb-6">
             <div>
-              <p className="text-gray-600">Selected Package</p>
-              <p className="text-xl font-bold text-gray-800">
+              <p className="text-slate-400 text-xs uppercase tracking-wider font-semibold">Selected Package</p>
+              <p className="text-2xl font-bold text-white mt-1">
                 {signalPackages.find(p => p.id === selectedPackage)?.name}
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-gray-600">Total Amount</p>
-              <p className="text-2xl font-bold text-blue-600">
+            <div className="md:text-right">
+              <p className="text-slate-400 text-xs uppercase tracking-wider font-semibold">Total Investment</p>
+              <p className="text-3xl font-black text-emerald-400 mt-1">
                 ${signalPackages.find(p => p.id === selectedPackage)?.price}
               </p>
             </div>
           </div>
+          
           <Button
             onClick={handlePurchase}
-            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-4"
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-base shadow-xl shadow-purple-600/25 transition-all cursor-pointer"
             disabled={isProcessing}
           >
             {isProcessing ? (
               <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                Processing...
+                <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                Processing Order...
               </span>
             ) : (
-              'Purchase Now'
+              <span className="flex items-center gap-2">
+                <Zap className="w-5 h-5" />
+                Complete Purchase Now
+              </span>
             )}
           </Button>
         </div>
       )}
 
-      {/* Disclaimer */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-        <div className="flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="font-semibold text-amber-800 mb-1">Important Notice</h4>
-            <p className="text-amber-700 text-sm">
-              Trading signals are for informational purposes only. Past performance does not guarantee 
-              future results. Always do your own research and never invest more than you can afford to lose.
-            </p>
-          </div>
+      {/* Disclaimer Notice */}
+      <div className="rounded-2xl bg-amber-500/10 border border-amber-500/20 p-6 flex items-start gap-4">
+        <AlertCircle className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" />
+        <div className="space-y-1">
+          <h4 className="font-semibold text-amber-300 text-sm">Important Notice</h4>
+          <p className="text-amber-200/80 text-xs leading-relaxed">
+            Trading signals are for informational and educational purposes only. Past performance does not guarantee 
+            future market results. Always do your own thorough research and never trade or invest more than you can comfortably afford to lose.
+          </p>
         </div>
       </div>
+
     </div>
   );
 };
