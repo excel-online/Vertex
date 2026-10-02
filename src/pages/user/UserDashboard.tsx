@@ -4,24 +4,19 @@ import {
   TrendingUp,
   ArrowDownLeft,
   ArrowUpRight,
-  Wallet,
   Gift,
   History,
   Settings,
-  Receipt,
   BarChart3,
-  Star,
   CheckCircle,
   MapPin,
   Users,
   Crown,
-  Briefcase,
   Eye,
   EyeOff,
-  Send,
-  PlusCircle
+  ShieldCheck,
+  Zap
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { userService } from '@/services/api';
 import type { DashboardData } from '@/types';
@@ -141,7 +136,7 @@ const TradingViewTicker = () => {
   }, []);
 
   return (
-    <div className="tradingview-widget-container w-full my-4 rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 backdrop-blur-md shadow-lg" ref={containerRef}>
+    <div className="tradingview-widget-container w-full my-4 rounded-2xl overflow-hidden border border-white/10 bg-slate-900/40 backdrop-blur-md shadow-lg" ref={containerRef}>
       <div className="tradingview-widget-container__widget w-full"></div>
     </div>
   );
@@ -206,29 +201,32 @@ const UserDashboard = () => {
   return (
     <div className="space-y-6 pb-12 max-w-7xl mx-auto px-4 sm:px-6">
       
-      {/* Top Greeting & Header Bar (Inspired by fintech design) */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
-        <div className="flex items-center gap-3">
+      {/* Top Greeting & Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-3 pb-1 border-b border-white/5">
+        <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-md ring-2 ring-purple-500/30">
             {user?.firstName?.[0]}{user?.lastName?.[0]}
           </div>
           <div>
-            <p className="text-slate-400 text-xs uppercase tracking-wider font-medium">Welcome back</p>
-            <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-              Hi, {user?.firstName || 'Trader'}
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <p className="text-slate-400 text-xs uppercase tracking-wider font-semibold">Welcome back</p>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2 mt-0.5">
+              Hi, <span className="text-white font-bold">{user?.firstName || 'Trader'}</span>
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 <CheckCircle className="w-3 h-3 mr-1" /> Verified
               </span>
             </h1>
           </div>
         </div>
 
-        {/* Action Header Pills / Earn badge */}
+        {/* Clickable Bonus Badge linking directly to Rewards */}
         <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-2xl shadow-lg flex items-center gap-2 font-semibold text-sm">
+          <NavLink 
+            to="/dashboard/rewards" 
+            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-4 py-2 rounded-2xl shadow-lg flex items-center gap-2 font-semibold text-sm transition-all transform hover:scale-[1.02]"
+          >
             <Gift className="w-4 h-4 text-purple-200" />
             Bonus ${user?.bonusBalance?.toLocaleString() || '0.00'}
-          </div>
+          </NavLink>
         </div>
       </div>
 
@@ -262,7 +260,6 @@ const UserDashboard = () => {
             </span>
           </div>
 
-          {/* Quick Dual-Wallet Look (Inspired by reference) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
             <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex items-center justify-between">
               <div>
@@ -403,7 +400,6 @@ const UserDashboard = () => {
               <h3 className="text-white font-semibold text-base">Market Live Chart</h3>
             </div>
             
-            {/* Symbol Toggles */}
             <div className="flex flex-wrap gap-1.5">
               {quickSymbols.map((item) => (
                 <button
@@ -436,26 +432,27 @@ const UserDashboard = () => {
 
       </div>
 
-      {/* Referral Banner Section */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 border border-purple-500/20 p-6 sm:p-8 shadow-2xl">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      {/* Replaced old referral card with Active Portfolio Performance Widget */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-white/10 p-6 sm:p-8 shadow-2xl">
+        <div className="absolute right-0 bottom-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-semibold mb-3 border border-purple-500/30">
-              <Gift className="w-3.5 h-3.5" /> Referral Program
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/30">
+              <Zap className="w-3.5 h-3.5" /> Portfolio Active
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">Invite friends & earn rewards</h3>
-            <p className="text-slate-300 text-sm max-w-xl">Share your referral code with friends and earn up to 8% bonus on their deposits instantly!</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-white">Smart Trading & Assets Performance</h3>
+            <p className="text-slate-300 text-sm max-w-xl">Your funds are actively generating returns. Monitor market fluctuations in real time and execute capital allocation instantly.</p>
           </div>
           
           <div className="flex flex-wrap items-center gap-4">
-            <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-3 backdrop-blur-md">
-              <p className="text-slate-400 text-xs font-medium">Your Code</p>
-              <p className="text-white font-mono font-bold text-base tracking-wider">{user?.referralCode || 'N/A'}</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-3 backdrop-blur-md">
-              <p className="text-slate-400 text-xs font-medium">Total Earned</p>
-              <p className="text-emerald-400 font-bold text-base">${user?.referralBonus?.toLocaleString() || '0.00'}</p>
+            <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 backdrop-blur-md flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-slate-400 text-xs font-medium">Security Status</p>
+                <p className="text-emerald-400 font-bold text-sm">Encrypted & Secure</p>
+              </div>
             </div>
           </div>
         </div>

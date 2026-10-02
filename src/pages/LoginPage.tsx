@@ -183,12 +183,7 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-slate-300">Password</label>
-                <NavLink to="/forgot-password" className="text-xs text-amber-500 hover:text-amber-400 font-medium">
-                  Forgot password?
-                </NavLink>
-              </div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
               <div className="relative group">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                 <input
@@ -203,6 +198,11 @@ const LoginPage = () => {
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
+              </div>
+              <div className="flex justify-end mt-2">
+                <NavLink to="/forgot-password" className="text-xs text-amber-500 hover:text-amber-400 font-medium transition-colors">
+                  Forgot password?
+                </NavLink>
               </div>
             </div>
 
