@@ -42,6 +42,9 @@ const AdminUserDetail = () => {
   const [emailBody, setEmailBody] = useState('');
   const [sendingEmail, setSendingEmail] = useState(false);
 
+  // Resolved safe user ID fallback
+  const userId = user?._id || (user as any)?.id || id;
+
   useEffect(() => {
     if (id) {
       fetchUserDetail();
@@ -53,7 +56,7 @@ const AdminUserDetail = () => {
       const response = await adminService.getUser(id!);
       if (response.success) {
         setUser(response.user);
-        setTransactions(response.transactions);
+        setTransactions(response.transactions || []);
       } else {
         toast.error('User not found');
         navigate('/admin/users');
@@ -71,9 +74,14 @@ const AdminUserDetail = () => {
       return;
     }
 
+    if (!userId) {
+      toast.error('User ID is missing');
+      return;
+    }
+
     try {
       const response = await adminService.updateBalance({
-        userId: id!,
+        userId: userId,
         field: balanceUpdate.field,
         amount: parseFloat(balanceUpdate.amount),
         operation: balanceUpdate.operation,
@@ -99,10 +107,10 @@ const AdminUserDetail = () => {
   };
 
   const handleToggleStatus = async () => {
-    if (!user) return;
+    if (!user || !userId) return;
     
     try {
-      const response = await adminService.updateUserStatus(id!, !user.isActive);
+      const response = await adminService.updateUserStatus(userId, !user.isActive);
       if (response.success) {
         toast.success(`User ${!user.isActive ? 'activated' : 'deactivated'} successfully`);
         fetchUserDetail();
@@ -116,11 +124,11 @@ const AdminUserDetail = () => {
 
   const handleSendCustomEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user || !userId) return;
 
     try {
       setSendingEmail(true);
-      const response = await adminService.sendCustomEmail(user._id || id!, {
+      const response = await adminService.sendCustomEmail(userId, {
         subject: emailSubject,
         headingTitle: emailHeading,
         messageBody: emailBody

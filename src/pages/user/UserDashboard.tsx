@@ -199,33 +199,32 @@ const UserDashboard = () => {
   }
 
   return (
-    <div className="space-y-6 pb-12 max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="space-y-6 pb-16 max-w-7xl mx-auto px-4 sm:px-6">
       
-      {/* Top Greeting & Header Bar */}
+      {/* 1. TOP HEADER BAR: Profile & Greeting linking to Profile Page + Rewards Badge */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-3 pb-1 border-b border-white/5">
-        <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-md ring-2 ring-purple-500/30">
+        <NavLink to="/dashboard/settings" className="flex items-center gap-3.5 group">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-md ring-2 ring-purple-500/30 group-hover:scale-105 transition-transform">
             {user?.firstName?.[0]}{user?.lastName?.[0]}
           </div>
           <div>
             <p className="text-slate-400 text-xs uppercase tracking-wider font-semibold">Welcome back</p>
             <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2 mt-0.5">
-              Hi, <span className="text-white font-bold">{user?.firstName || 'Trader'}</span>
+              Hi, <span className="text-white font-bold group-hover:text-purple-400 transition-colors">{user?.firstName || 'Trader'}</span>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 <CheckCircle className="w-3 h-3 mr-1" /> Verified
               </span>
             </h1>
           </div>
-        </div>
+        </NavLink>
 
-        {/* Clickable Bonus Badge linking directly to Rewards */}
         <div className="flex items-center gap-3">
           <NavLink 
             to="/dashboard/rewards" 
             className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-4 py-2 rounded-2xl shadow-lg flex items-center gap-2 font-semibold text-sm transition-all transform hover:scale-[1.02]"
           >
             <Gift className="w-4 h-4 text-purple-200" />
-            Bonus ${user?.bonusBalance?.toLocaleString() || '0.00'}
+            Earn ${user?.bonusBalance?.toLocaleString() || '0.00'}
           </NavLink>
         </div>
       </div>
@@ -233,10 +232,9 @@ const UserDashboard = () => {
       {/* TradingView Ticker Widget */}
       <TradingViewTicker />
 
-      {/* Balance & Account Overview Cards */}
+      {/* 2. MAIN BALANCE & MULTI-CURRENCY STYLE CARDS */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Main Balance Card */}
         <div className="lg:col-span-2 relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-indigo-950/60 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl">
           <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
           
@@ -287,174 +285,173 @@ const UserDashboard = () => {
           </div>
         </div>
 
-        {/* Quick Action Hub */}
+        {/* Account Info Box */}
         <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl flex flex-col justify-between">
-          <div>
-            <h3 className="text-white font-semibold text-base mb-4">Quick Actions</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <NavLink to="/dashboard/deposits" className="group">
-                <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                    <ArrowDownLeft className="w-6 h-6" />
-                  </div>
-                  <span className="text-white text-sm font-medium">Deposit</span>
-                </div>
-              </NavLink>
-
-              <NavLink to="/dashboard/withdrawals" className="group">
-                <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
-                  <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                    <ArrowUpRight className="w-6 h-6" />
-                  </div>
-                  <span className="text-white text-sm font-medium">Withdraw</span>
-                </div>
-              </NavLink>
-
-              <NavLink to="/dashboard/history" className="group">
-                <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                    <History className="w-6 h-6" />
-                  </div>
-                  <span className="text-white text-sm font-medium">History</span>
-                </div>
-              </NavLink>
-
-              <NavLink to="/dashboard/settings" className="group">
-                <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                    <Settings className="w-6 h-6" />
-                  </div>
-                  <span className="text-white text-sm font-medium">Settings</span>
-                </div>
-              </NavLink>
-            </div>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
-            <span>Account Type</span>
-            <span className="text-purple-400 font-medium">{user?.accountType || 'Investment'}</span>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Account Details & Live Chart Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Account Information Panel */}
-        <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
-          <h3 className="text-lg font-bold text-white mb-2">Account Overview</h3>
-          
-          <div className="space-y-3">
+          <div className="space-y-4">
+            <h3 className="text-white font-semibold text-base mb-2">Account Overview</h3>
+            
             <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
                   <Crown className="w-4 h-4" />
                 </div>
-                <span className="text-slate-300 text-sm">Package Tier</span>
+                <span className="text-slate-300 text-sm">Tier</span>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getTierColor(user?.investmentTier || 'None')}`}>
+              <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getTierColor(user?.investmentTier || 'None')}`}>
                 {user?.investmentTier || 'Starter'}
               </span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <span className="text-slate-300 text-sm">Country</span>
               </div>
-              <span className="text-white font-medium text-sm">{user?.country || 'Not specified'}</span>
+              <span className="text-white font-medium text-sm">{user?.country || 'Global'}</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
                   <Users className="w-4 h-4" />
                 </div>
-                <span className="text-slate-300 text-sm">Total Referrals</span>
+                <span className="text-slate-300 text-sm">Referrals</span>
               </div>
               <span className="text-white font-semibold text-sm">{user?.referralCount || 0}</span>
             </div>
-
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                  <CheckCircle className="w-4 h-4" />
-                </div>
-                <span className="text-slate-300 text-sm">Verification Status</span>
-              </div>
-              <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-semibold">
-                Verified
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Live TradingView Chart Panel */}
-        <div className="lg:col-span-2 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl overflow-hidden flex flex-col">
-          <div className="p-4 sm:p-5 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02]">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-purple-400" />
-              <h3 className="text-white font-semibold text-base">Market Live Chart</h3>
-            </div>
-            
-            <div className="flex flex-wrap gap-1.5">
-              {quickSymbols.map((item) => (
-                <button
-                  key={item.symbol}
-                  onClick={() => {
-                    setChartSymbol(item.symbol);
-                    setChartExchange(item.exchange);
-                  }}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-xl transition-all ${
-                    chartSymbol === item.symbol
-                      ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
-                      : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/5'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
           </div>
 
-          <div className="h-[420px] w-full p-2">
-            <TradingViewChart 
-              symbol={chartSymbol}
-              exchange={chartExchange}
-              interval="30"
-              theme="dark"
-            />
+          <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+            <span>Security</span>
+            <span className="text-emerald-400 font-medium flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5" /> Protected
+            </span>
           </div>
         </div>
 
       </div>
 
-      {/* Replaced old referral card with Active Portfolio Performance Widget */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-white/10 p-6 sm:p-8 shadow-2xl">
-        <div className="absolute right-0 bottom-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/30">
-              <Zap className="w-3.5 h-3.5" /> Portfolio Active
+      {/* 3. CORE ACTION BUTTONS (Add money, Send/Withdraw, Signal Purchase, Upgrade) */}
+      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl">
+        <h3 className="text-white font-semibold text-base mb-4">Quick Actions</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <NavLink to="/dashboard/deposits" className="group">
+            <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <ArrowDownLeft className="w-6 h-6" />
+              </div>
+              <span className="text-white text-sm font-medium">Add Money</span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-white">Smart Trading & Assets Performance</h3>
-            <p className="text-slate-300 text-sm max-w-xl">Your funds are actively generating returns. Monitor market fluctuations in real time and execute capital allocation instantly.</p>
+          </NavLink>
+
+          <NavLink to="/dashboard/withdrawals" className="group">
+            <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <ArrowUpRight className="w-6 h-6" />
+              </div>
+              <span className="text-white text-sm font-medium">Send / Withdraw</span>
+            </div>
+          </NavLink>
+
+          <NavLink to="/dashboard/signals" className="group">
+            <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <Zap className="w-6 h-6" />
+              </div>
+              <span className="text-white text-sm font-medium">Signal Purchase</span>
+            </div>
+          </NavLink>
+
+          <NavLink to="/dashboard/upgrade" className="group">
+            <div className="bg-white/5 hover:bg-purple-600/20 border border-white/5 hover:border-purple-500/30 rounded-2xl p-4 text-center transition-all duration-300 flex flex-col items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <Crown className="w-6 h-6" />
+              </div>
+              <span className="text-white text-sm font-medium">Account Upgrade</span>
+            </div>
+          </NavLink>
+        </div>
+      </div>
+
+      {/* 4. RECENT TRANSACTIONS FEED (Matching the notebook layout with "See All" link) */}
+      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-white font-semibold text-base">Recent Transactions</h3>
+          <NavLink to="/dashboard/history" className="text-xs text-purple-400 hover:text-purple-300 font-medium">
+            See all
+          </NavLink>
+        </div>
+
+        <div className="space-y-3">
+          {dashboardData?.recentTransactions && dashboardData.recentTransactions.length > 0 ? (
+            dashboardData.recentTransactions.slice(0, 3).map((tx) => (
+              <div key={tx._id} className="flex items-center justify-between p-3.5 rounded-2xl bg-white/5 border border-white/5">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                    tx.type === 'Deposit' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                  }`}>
+                    {tx.type === 'Deposit' ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-medium">{tx.type}</p>
+                    <p className="text-slate-400 text-xs">{new Date(tx.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className={`text-sm font-bold ${tx.type === 'Deposit' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toLocaleString()}
+                  </p>
+                  <span className="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                    {tx.status}
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-6 text-slate-400 text-sm">
+              No recent transactions found.
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 5. LIVE MARKET CHART PANEL */}
+      <div className="rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl overflow-hidden flex flex-col">
+        <div className="p-4 sm:p-5 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02]">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-purple-400" />
+            <h3 className="text-white font-semibold text-base">Market Candle Chart</h3>
           </div>
           
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 backdrop-blur-md flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-slate-400 text-xs font-medium">Security Status</p>
-                <p className="text-emerald-400 font-bold text-sm">Encrypted & Secure</p>
-              </div>
-            </div>
+          <div className="flex flex-wrap gap-1.5">
+            {quickSymbols.map((item) => (
+              <button
+                key={item.symbol}
+                onClick={() => {
+                  setChartSymbol(item.symbol);
+                  setChartExchange(item.exchange);
+                }}
+                className={`px-3 py-1.5 text-xs font-medium rounded-xl transition-all ${
+                  chartSymbol === item.symbol
+                    ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                    : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/5'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
+        </div>
+
+        <div className="h-[420px] w-full p-2">
+          <TradingViewChart 
+            symbol={chartSymbol}
+            exchange={chartExchange}
+            interval="30"
+            theme="dark"
+          />
         </div>
       </div>
 

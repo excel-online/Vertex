@@ -1,45 +1,53 @@
 import { useState } from 'react';
-import { User, Mail, Phone, Globe, Lock, Save, ShieldCheck, Award, CreditCard, Share2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  User, 
+  Mail, 
+  Phone, 
+  Globe, 
+  Lock, 
+  ShieldCheck, 
+  Award, 
+  CreditCard, 
+  HelpCircle, 
+  ChevronRight, 
+  Users, 
+  FileText, 
+  Link as LinkIcon, 
+  Smartphone, 
+  LifeBuoy, 
+  Star, 
+  Building, 
+  LogOut,
+  X,
+  Save
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { authService } from '@/services/api';
 import { toast } from 'sonner';
 
 const ProfilePage = () => {
-  const { user, updateUser } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
+  const { user, updateUser, logout } = useAuth();
+  const navigate = useNavigate();
+  
+  const [showAccountModal, setShowAccountModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     phoneNumber: user?.phoneNumber || '',
     country: user?.country || ''
   });
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPasswordData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSave = async () => {
+  const handleSaveProfile = async () => {
     setIsLoading(true);
     try {
       const response = await authService.updateProfile(formData);
       if (response.success && response.user) {
         updateUser(response.user);
         toast.success('Profile updated successfully');
-        setIsEditing(false);
+        setShowAccountModal(false);
       } else {
         toast.error(response.message || 'Failed to update profile');
       }
@@ -50,333 +58,331 @@ const ProfilePage = () => {
     }
   };
 
-  const handleChangePassword = async () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('New passwords do not match');
-      return;
-    }
-    if (passwordData.newPassword.length < 6) {
-      toast.error('New password must be at least 6 characters');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await authService.changePassword(
-        passwordData.currentPassword,
-        passwordData.newPassword
-      );
-      if (response.success) {
-        toast.success('Password changed successfully');
-        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-        setIsChangingPassword(false);
-      } else {
-        toast.error(response.message || 'Failed to change password');
-      }
-    } catch (error) {
-      toast.error('An error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getTierColor = (tier: string) => {
-    switch (tier) {
-      case 'VIP':
-        return 'text-purple-400 bg-purple-500/10 border-purple-500/30';
-      case 'Standard':
-        return 'text-blue-400 bg-blue-500/10 border-blue-500/30';
-      case 'Premium':
-        return 'text-amber-400 bg-amber-500/10 border-amber-500/30';
-      case 'Starter':
-        return 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30';
-      default:
-        return 'text-slate-400 bg-white/5 border-white/10';
-    }
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+    toast.success('Logged out successfully');
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 pb-16">
+    <div className="space-y-6 max-w-4xl mx-auto px-4 sm:px-6 pb-20">
       
-      {/* Header Banner */}
-      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl flex items-center gap-4">
-        <div className="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner">
-          <User className="w-7 h-7" />
+      {/* Top Header Bar with Help Button */}
+      <div className="flex items-center justify-between pt-4 pb-2 border-b border-white/5">
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-white tracking-tight">Profile</h1>
         </div>
-        <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">My Profile</h2>
-          <p className="text-slate-400 text-sm mt-0.5">
-            Manage your account settings, personal details, and security credentials
+        <button 
+          onClick={() => navigate('/dashboard/support')}
+          className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-2xl flex items-center gap-2 text-sm font-semibold transition-all shadow-sm"
+        >
+          <HelpCircle className="w-4 h-4 text-purple-400" />
+          Help
+        </button>
+      </div>
+
+      {/* User Header Info Card */}
+      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl flex items-center gap-4">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-2 ring-purple-500/30">
+          {user?.firstName?.[0] || 'U'}{user?.lastName?.[0] || ''}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-bold text-white truncate">
+              {user?.firstName || 'User'} {user?.lastName || ''}
+            </h2>
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+          </div>
+          <p className="text-slate-400 text-xs font-mono mt-0.5 truncate">
+            @{user?.username || user?.email?.split('@')[0] || 'account'}
           </p>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      {/* SECTION: Profile Settings */}
+      <div className="space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-2">Profile</p>
         
-        {/* Profile Info Form Section */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="rounded-3xl bg-slate-900/80 border border-white/10 divide-y divide-white/5 shadow-xl backdrop-blur-xl overflow-hidden">
           
-          {/* Personal Information */}
-          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-6">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <h3 className="text-lg font-bold text-white">Personal Information</h3>
-              <Button
-                onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-                className={`px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all shadow-lg cursor-pointer ${
-                  isEditing 
-                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20' 
-                    : 'bg-purple-600 hover:bg-purple-500 text-white shadow-purple-600/20'
-                }`}
-                disabled={isLoading}
-              >
-                {isEditing ? (
-                  <>
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Changes
-                  </>
-                ) : (
-                  'Edit Profile'
-                )}
-              </Button>
+          <button 
+            onClick={() => setShowAccountModal(true)}
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                <User className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Account Information</p>
+                <p className="text-slate-400 text-xs">Update your personal details & info</p>
+              </div>
             </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </button>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  First Name
-                </label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors disabled:opacity-50"
-                  />
-                </div>
+          <button 
+            onClick={() => navigate('/dashboard/recipients')}
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                <Users className="w-5 h-5" />
               </div>
-
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Last Name
-                </label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors disabled:opacity-50"
-                  />
-                </div>
+              <div>
+                <p className="text-white text-sm font-medium">Recipients</p>
+                <p className="text-slate-400 text-xs">Manage saved withdrawal accounts & wallets</p>
               </div>
-
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                  <input
-                    type="email"
-                    value={user?.email || ''}
-                    disabled
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-slate-400 text-sm focus:outline-none disabled:opacity-50 cursor-not-allowed"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Username
-                </label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                  <input
-                    type="text"
-                    value={user?.username || ''}
-                    disabled
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-slate-400 text-sm focus:outline-none disabled:opacity-50 cursor-not-allowed"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Phone Number
-                </label>
-                <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors disabled:opacity-50"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Country
-                </label>
-                <div className="relative">
-                  <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                  <input
-                    type="text"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors disabled:opacity-50"
-                  />
-                </div>
-              </div>
-
             </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </button>
+
+          <button 
+            onClick={() => navigate('/dashboard/upgrade')}
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Verification & Tier</p>
+                <p className="text-slate-400 text-xs">Current Tier: <span className="text-amber-400 font-semibold">{user?.investmentTier || 'Starter'}</span></p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </button>
+
+          <button 
+            onClick={() => navigate('/dashboard/history')}
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                <CreditCard className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Transaction Limits</p>
+                <p className="text-slate-400 text-xs">View your deposit and withdrawal thresholds</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </button>
+
+        </div>
+      </div>
+
+      {/* SECTION: Integrations */}
+      <div className="space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-2">Integrations</p>
+        
+        <div className="rounded-3xl bg-slate-900/80 border border-white/10 divide-y divide-white/5 shadow-xl backdrop-blur-xl overflow-hidden">
+          <div className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                <LinkIcon className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Connected Apps</p>
+                <p className="text-slate-400 text-xs">Manage external wallets & API integrations</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION: Security */}
+      <div className="space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-2">Security</p>
+        
+        <div className="rounded-3xl bg-slate-900/80 border border-white/10 divide-y divide-white/5 shadow-xl backdrop-blur-xl overflow-hidden">
+          
+          <button 
+            onClick={() => navigate('/dashboard/settings')}
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
+                <Lock className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Change Password</p>
+                <p className="text-slate-400 text-xs">Update your security credentials</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </button>
+
+          <div className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Two-Factor Authentication</p>
+                <p className="text-slate-400 text-xs">Add an extra layer of security</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
           </div>
 
-          {/* Change Password */}
-          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-6">
+          <div className="w-full flex items-center justify-between p-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                <Smartphone className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Biometric Login</p>
+                <p className="text-slate-400 text-xs">Use fingerprint or face recognition</p>
+              </div>
+            </div>
+            <input type="checkbox" className="toggle toggle-purple accent-purple-600 w-10 h-5 cursor-pointer" defaultChecked />
+          </div>
+
+        </div>
+      </div>
+
+      {/* SECTION: General */}
+      <div className="space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-2">General</p>
+        
+        <div className="rounded-3xl bg-slate-900/80 border border-white/10 divide-y divide-white/5 shadow-xl backdrop-blur-xl overflow-hidden">
+          
+          <button 
+            onClick={() => navigate('/dashboard/support')}
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+                <LifeBuoy className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Contact Our Support</p>
+                <p className="text-slate-400 text-xs">Get 24/7 assistance from our team</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </button>
+
+          <a 
+            href="https://play.google.com" 
+            target="_blank" 
+            rel="noreferrer"
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                <Star className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Rate Us on the Play Store</p>
+                <p className="text-slate-400 text-xs">Support us with a 5-star review</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </a>
+
+          <div className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-slate-500/10 text-slate-300 flex items-center justify-center">
+                <Building className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">About Us</p>
+                <p className="text-slate-400 text-xs">Company info & terms</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </div>
+
+        </div>
+      </div>
+
+      {/* Log Out Action */}
+      <div className="pt-2">
+        <button
+          onClick={handleLogout}
+          className="w-full py-4 rounded-3xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 font-semibold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg"
+        >
+          <LogOut className="w-4 h-4" />
+          Log out
+        </button>
+      </div>
+
+      {/* ACCOUNT EDIT MODAL */}
+      {showAccountModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="rounded-3xl bg-slate-900 border border-white/10 w-full max-w-md p-6 space-y-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <h3 className="text-lg font-bold text-white">Security & Password</h3>
-              <Button
-                onClick={() => setIsChangingPassword(!isChangingPassword)}
-                variant="outline"
-                className="px-4 py-2 rounded-2xl border-purple-500/40 text-purple-400 hover:bg-purple-500/10 text-sm font-semibold transition-all cursor-pointer"
-              >
-                <Lock className="w-4 h-4 mr-2" />
-                {isChangingPassword ? 'Cancel' : 'Change Password'}
-              </Button>
+              <h3 className="text-lg font-bold text-white">Edit Account Information</h3>
+              <button onClick={() => setShowAccountModal(false)} className="text-slate-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            {isChangingPassword && (
-              <div className="space-y-4 pt-2 animate-fadeIn">
-                <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Current Password
-                  </label>
-                  <input
-                    type="password"
-                    name="currentPassword"
-                    value={passwordData.currentPassword}
-                    onChange={handlePasswordChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors"
-                    placeholder="Enter current password"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors"
-                    placeholder="Enter new password (min 6 characters)"
-                  />
-                </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">First Name</label>
+                <input
+                  type="text"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Last Name</label>
+                <input
+                  type="text"
+                  value={formData.lastName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Phone Number</label>
+                <input
+                  type="text"
+                  value={formData.phoneNumber}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Country</label>
+                <input
+                  type="text"
+                  value={formData.country}
+                  onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500"
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Confirm New Password
-                  </label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors"
-                    placeholder="Confirm new password"
-                  />
-                </div>
-
+              <div className="flex gap-3 pt-2">
                 <Button
-                  onClick={handleChangePassword}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/20 transition-all cursor-pointer mt-2"
-                  disabled={isLoading}
+                  onClick={() => setShowAccountModal(false)}
+                  variant="outline"
+                  className="flex-1 rounded-2xl border-white/10 text-white hover:bg-white/5"
                 >
-                  {isLoading ? 'Updating Password...' : 'Update Password'}
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveProfile}
+                  disabled={isLoading}
+                  className="flex-1 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  {isLoading ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>
-            )}
-          </div>
-
-        </div>
-
-        {/* Sidebar Column */}
-        <div className="space-y-6">
-          
-          {/* Account Status Card */}
-          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
-            <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-emerald-400" />
-              Account Status
-            </h3>
-            
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
-                <span className="text-slate-400 text-xs">Status</span>
-                <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-                  Active
-                </span>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
-                <span className="text-slate-400 text-xs flex items-center gap-1">
-                  <Award className="w-3.5 h-3.5 text-purple-400" /> Investment Tier
-                </span>
-                <span className={`px-2.5 py-1 rounded-xl border text-xs font-bold ${getTierColor(user?.investmentTier || 'None')}`}>
-                  {user?.investmentTier || 'None'}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
-                <span className="text-slate-400 text-xs flex items-center gap-1">
-                  <CreditCard className="w-3.5 h-3.5 text-blue-400" /> Account Type
-                </span>
-                <span className="text-white font-semibold text-xs">{user?.accountType || 'Standard'}</span>
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
-                <span className="text-slate-400 text-xs">Currency</span>
-                <span className="text-white font-semibold text-xs">{user?.currencyType || 'USD'}</span>
-              </div>
             </div>
           </div>
-
-          {/* Referral Code Card */}
-          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
-            <h3 className="text-base font-bold text-white mb-1 flex items-center gap-2">
-              <Share2 className="w-5 h-5 text-purple-400" />
-              Referral Code
-            </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Share your referral code with friends and earn exclusive investment bonuses!
-            </p>
-            <div className="p-4 bg-white/5 border border-white/10 rounded-2xl text-center">
-              <p className="text-xs text-slate-400 uppercase tracking-wider mb-1 font-medium">Your Code</p>
-              <p className="text-purple-400 font-mono font-extrabold text-xl tracking-wider">
-                {user?.referralCode || 'N/A'}
-              </p>
-            </div>
-          </div>
-
         </div>
+      )}
 
-      </div>
     </div>
   );
 };
 
-export default ProfilePage;
+export ProfilePage;
