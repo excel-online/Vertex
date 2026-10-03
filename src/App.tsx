@@ -27,6 +27,10 @@ import SignalPurchase from '@/pages/user/SignalPurchase';
 import AccountSettings from '@/pages/user/AccountSettings';
 import AccountUpgrade from '@/pages/user/AccountUpgrade';
 import ContactSupport from '@/pages/user/ContactSupport';
+import ProfilePage from '@/pages/user/ProfilePage';
+import Recipients from '@/pages/user/Recipients';
+import Rewards from '@/pages/user/Rewards';                 // <-- Added Rewards Page import
+
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminTransactions from '@/pages/admin/AdminTransactions';
@@ -100,37 +104,11 @@ function AppRoutes() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       
-      <Route 
-        path="/about-us" 
-        element={
-          <AboutUs />
-        } 
-      />
-
-      <Route path="/terms-of-use" 
-        element={
-          <TermsOfUse/>
-        }
-      />
-
-      <Route path="/privacy-policy"
-        element={
-          <PrivacyPolicy/>
-        }
-      />
-      
-      <Route path="/contact-us"
-        element={
-          <ContactUs/>
-        }
-      />
-
-      <Route path="/faq"
-        element={
-          <FAQ/>
-        }
-      />
-      
+      <Route path="/about-us" element={<AboutUs />} />
+      <Route path="/terms-of-use" element={<TermsOfUse />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/contact-us" element={<ContactUs />} />
+      <Route path="/faq" element={<FAQ />} />
 
       {/* User Dashboard Routes */}
       <Route 
@@ -151,6 +129,9 @@ function AppRoutes() {
         <Route path="upgrade" element={<AccountUpgrade />} />
         <Route path="settings" element={<AccountSettings />} />
         <Route path="support" element={<ContactSupport />} />
+        <Route path="profile" element={<ProfilePage />} />
+        <Route path="recipients" element={<Recipients />} />
+        <Route path="rewards" element={<Rewards />} />           {/* <-- Added Rewards Route */}
       </Route>
 
       {/* Admin Routes */}
