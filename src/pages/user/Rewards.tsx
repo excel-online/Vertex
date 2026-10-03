@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   Gift, 
   Copy, 
@@ -7,21 +7,23 @@ import {
   Users, 
   TrendingUp, 
   Award, 
-  ArrowUpRight, 
   Sparkles,
-  ShieldCheck
+  ArrowRight,
+  BarChart3
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { userService } from '@/services/api';
 import { toast } from 'sonner';
 
 const Rewards = () => {
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<'claim' | 'history'>('claim');
+  
   const [referralStats, setReferralStats] = useState({
     totalReferrals: user?.referralCount || 0,
     totalEarned: user?.referralBonus || 0,
-    pendingBonus: 0,
+    onboardingCount: 0,
+    rewardedCount: user?.referralCount || 0,
   });
 
   const referralLink = `${window.location.origin}/register?ref=${user?.referralCode || 'TRADER'}`;
@@ -33,139 +35,169 @@ const Rewards = () => {
     setTimeout(() => setCopied(false), 3000);
   };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Join Vellumtrade',
+          text: 'Join me on Vellumtrade and start growing your investment portfolio today!',
+          url: referralLink,
+        });
+      } catch (err) {
+        // Fallback to copy if share cancelled
+        handleCopyLink();
+      }
+    } else {
+      handleCopyLink();
+    }
+  };
+
   return (
-    <div className="space-y-6 pb-12 max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="space-y-6 pb-16 max-w-2xl mx-auto text-slate-800">
       
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-3 pb-1 border-b border-white/5">
-        <div>
-          <p className="text-slate-400 text-xs uppercase tracking-wider font-semibold">Affiliate & Growth</p>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2 mt-0.5">
-            Referral Rewards & Bonuses
-          </h1>
-        </div>
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium">
-          <Sparkles className="w-4 h-4 text-purple-400" /> Earn up to 8% Commission
-        </div>
-      </div>
+      {/* Top Header & Available Balance Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-700 via-indigo-700 to-purple-900 p-6 sm:p-8 text-white shadow-xl">
+        {/* Background mature image overlay with blend mode */}
+        <div className="absolute inset-0 opacity-20 mix-blend-overlay bg-cover bg-center" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80')` }}></div>
+        <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-purple-400/20 rounded-full blur-2xl pointer-events-none"></div>
 
-      {/* Hero Banner with Illustration & Link Generation */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-950 via-slate-900 to-indigo-950 border border-purple-500/20 p-6 sm:p-10 shadow-2xl">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-semibold border border-purple-500/30">
-              <Gift className="w-3.5 h-3.5" /> Invite & Earn
+        <div className="relative z-10 flex flex-col space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs uppercase tracking-wider font-semibold text-purple-200">Available Balance</span>
+            <div className="w-12 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-inner">
+              <div className="w-6 h-4 rounded bg-blue-500/80"></div>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-              Grow Your Network, Multiply Your Income
+          </div>
+
+          <div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+              ${referralStats.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </h2>
-            <p className="text-slate-300 text-sm sm:text-base">
-              Share your unique referral link with friends, family, or your community. Receive instant commission bonuses straight to your balance every time they fund their accounts!
+            <p className="text-purple-200 text-xs mt-1">Earned from referral bonuses & commissions</p>
+          </div>
+
+          {/* Action Tabs / Buttons Row */}
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <button
+              onClick={() => setActiveTab('claim')}
+              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-2xl font-semibold text-sm transition-all shadow-md ${
+                activeTab === 'claim'
+                  ? 'bg-white text-purple-900 shadow-purple-900/20'
+                  : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+              }`}
+            >
+              <span>Claim reward</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-2xl font-semibold text-sm transition-all ${
+                activeTab === 'history'
+                  ? 'bg-white text-purple-900 shadow-purple-900/20'
+                  : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+              }`}
+            >
+              <span>Reward history</span>
+              <BarChart3 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Promo Card: Invite Friends and Earn */}
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
+        <div className="flex items-start gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-100">
+            <Users className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Invite friends and earn $155</h3>
+            <p className="text-slate-500 text-xs sm:text-sm mt-1 leading-relaxed">
+              Earn rewards through our referral program! Invite your friends and get bonuses for each referral when they verify their account and meet the investment requirements[span_2](start_span)[span_2](end_span).
             </p>
+          </div>
+        </div>
 
-            {/* Referral Link Box */}
-            <div className="pt-2 space-y-2">
-              <label className="text-xs text-slate-400 font-medium uppercase tracking-wider">Your Exclusive Invite Link</label>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 flex items-center justify-between backdrop-blur-md">
-                  <span className="text-white font-mono text-sm truncate mr-2">{referralLink}</span>
-                </div>
-                <button
-                  onClick={handleCopyLink}
-                  className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-6 py-3 rounded-2xl transition-all shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 text-sm shrink-0"
-                >
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {copied ? 'Copied!' : 'Copy Link'}
-                </button>
-              </div>
-            </div>
+        {/* Referral Link Section */}
+        <div className="space-y-2 pt-2">
+          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Referral link</label>
+          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 flex items-center justify-between">
+            <span className="text-slate-700 font-mono text-xs sm:text-sm truncate mr-2">{referralLink}</span>
           </div>
 
-          {/* Visual Graphic / Illustration Container */}
-          <div className="flex justify-center items-center">
-            <div className="relative w-full max-w-md h-72 sm:h-80 rounded-3xl bg-gradient-to-tr from-purple-600/20 via-indigo-600/10 to-transparent border border-white/10 flex items-center justify-center p-6 shadow-2xl backdrop-blur-xl group">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/20 via-transparent to-transparent rounded-3xl"></div>
-              
-              {/* Floating stylized SVG Illustration representation */}
-              <div className="relative z-10 flex flex-col items-center text-center space-y-4">
-                <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center shadow-xl shadow-purple-500/30 transform group-hover:scale-105 transition-transform duration-300">
-                  <Share2 className="w-10 h-10 text-white" />
-                </div>
-                <div>
-                  <h4 className="text-white font-bold text-lg">Instant Payouts</h4>
-                  <p className="text-slate-400 text-xs mt-1 max-w-[240px]">Commissions are automatically settled into your bonus wallet balance.</p>
-                </div>
-                <div className="flex items-center gap-2 pt-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span className="text-xs text-emerald-400 font-medium">Program Active & Verified</span>
-                </div>
-              </div>
-            </div>
+          {/* Secondary Action Buttons (Share, Copy, T&Cs) */}
+          <div className="grid grid-cols-3 gap-2 pt-2">
+            <button
+              onClick={handleShare}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-slate-50 hover:bg-purple-50 hover:text-purple-600 text-slate-700 text-xs font-semibold border border-slate-200/80 transition-colors"
+            >
+              <Share2 className="w-4 h-4 text-purple-600" />
+              <span>Share</span>
+            </button>
+            <button
+              onClick={handleCopyLink}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-slate-50 hover:bg-purple-50 hover:text-purple-600 text-slate-700 text-xs font-semibold border border-slate-200/80 transition-colors"
+            >
+              {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-purple-600" />}
+              <span>{copied ? 'Copied' : 'Copy'}</span>
+            </button>
+            <button
+              onClick={() => toast.info('Terms: Rewards are credited after referees complete verification and initial deposit.')}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-slate-50 hover:bg-purple-50 hover:text-purple-600 text-slate-700 text-xs font-semibold border border-slate-200/80 transition-colors"
+            >
+              <Sparkles className="w-4 h-4 text-purple-600" />
+              <span>T & C's</span>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Metrics Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl flex items-center justify-between">
-          <div>
-            <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">Total Referrals</p>
-            <p className="text-3xl font-extrabold text-white mt-1">{referralStats.totalReferrals}</p>
-            <p className="text-slate-400 text-xs mt-1">Friends registered</p>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center shadow-inner">
-            <Users className="w-7 h-7" />
-          </div>
+      {/* Your Invite History Card */}
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-bold text-slate-900">Your invite history</h3>
+          <button 
+            onClick={() => toast.info(`Total referrals registered: ${referralStats.totalReferrals}`)}
+            className="text-xs font-semibold text-purple-600 hover:text-purple-700"
+          >
+            See all invites
+          </button>
         </div>
 
-        <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl flex items-center justify-between">
-          <div>
-            <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">Total Earned</p>
-            <p className="text-3xl font-extrabold text-emerald-400 mt-1">${referralStats.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-            <p className="text-slate-400 text-xs mt-1">Lifetime rewards</p>
+        {/* 3-Column Metrics Grid */}
+        <div className="grid grid-cols-3 gap-3 pt-2 text-center">
+          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+            <p className="text-2xl font-extrabold text-slate-900">{referralStats.totalReferrals}</p>
+            <p className="text-[11px] font-medium text-slate-400 mt-1 uppercase tracking-wider">Invited</p>
           </div>
-          <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-inner">
-            <TrendingUp className="w-7 h-7" />
+          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+            <p className="text-2xl font-extrabold text-slate-900">{referralStats.onboardingCount}</p>
+            <p className="text-[11px] font-medium text-slate-400 mt-1 uppercase tracking-wider">Onboarding</p>
           </div>
-        </div>
-
-        <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl flex items-center justify-between">
-          <div>
-            <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">Referral Code</p>
-            <p className="text-2xl font-mono font-bold text-white mt-1">{user?.referralCode || 'N/A'}</p>
-            <p className="text-purple-400 text-xs mt-1">Share with friends</p>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shadow-inner">
-            <Award className="w-7 h-7" />
+          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+            <p className="text-2xl font-extrabold text-slate-900">{referralStats.rewardedCount}</p>
+            <p className="text-[11px] font-medium text-slate-400 mt-1 uppercase tracking-wider">Rewarded</p>
           </div>
         </div>
       </div>
 
-      {/* Referral Activity / Info Breakdown */}
-      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 shadow-xl backdrop-blur-xl space-y-6">
-        <h3 className="text-lg font-bold text-white">How It Works</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white/5 border border-white/5 rounded-2xl p-5 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold">1</div>
-            <h4 className="text-white font-semibold text-base">Share Your Link</h4>
-            <p className="text-slate-400 text-sm">Send your unique invite code or link to colleagues, friends, or share it on your socials.</p>
+      {/* Code Display Box */}
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+            <Award className="w-5 h-5" />
           </div>
-
-          <div className="bg-white/5 border border-white/5 rounded-2xl p-5 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">2</div>
-            <h4 className="text-white font-semibold text-base">Friends Join & Deposit</h4>
-            <p className="text-slate-400 text-sm">When your referees create an account and complete their investment deposit, you qualify.</p>
-          </div>
-
-          <div className="bg-white/5 border border-white/5 rounded-2xl p-5 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">3</div>
-            <h4 className="text-white font-semibold text-base">Collect Rewards</h4>
-            <p className="text-slate-400 text-sm">Get credited automatically with bonus percentages directly in your rewards wallet.</p>
+          <div>
+            <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">My Referral Code</p>
+            <p className="text-lg font-mono font-bold text-slate-900 mt-0.5">{user?.referralCode || 'TRADER'}</p>
           </div>
         </div>
+        <button
+          onClick={handleCopyLink}
+          className="px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-xl font-semibold text-xs transition-colors"
+        >
+          Copy Code
+        </button>
       </div>
 
     </div>
