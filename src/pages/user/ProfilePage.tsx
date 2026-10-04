@@ -69,20 +69,18 @@ const ProfilePage = () => {
       
       {/* Top Header Bar with Help Button */}
       <div className="flex items-center justify-between pt-4 pb-2 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-white tracking-tight">Profile</h1>
-        </div>
+        <h1 className="text-2xl font-bold text-white tracking-tight">Profile</h1>
         <button 
           onClick={() => navigate('/dashboard/support')}
-          className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-2xl flex items-center gap-2 text-sm font-semibold transition-all shadow-sm"
+          className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-2xl flex items-center gap-2 text-sm font-semibold transition-all shadow-sm cursor-pointer"
         >
           <HelpCircle className="w-4 h-4 text-purple-400" />
           Help
         </button>
       </div>
 
-      {/* User Header Info Card */}
-      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-6 shadow-xl backdrop-blur-xl flex items-center gap-4">
+      {/* User Header Info Card (Matching reference design) */}
+      <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-5 shadow-xl backdrop-blur-xl flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-2 ring-purple-500/30">
           {user?.firstName?.[0] || 'U'}{user?.lastName?.[0] || ''}
         </div>
@@ -99,7 +97,7 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* SECTION: Profile Settings */}
+      {/* SECTION: Profile */}
       <div className="space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-2">Profile</p>
         
@@ -107,7 +105,7 @@ const ProfilePage = () => {
           
           <button 
             onClick={() => setShowAccountModal(true)}
-            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left cursor-pointer"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
@@ -123,7 +121,7 @@ const ProfilePage = () => {
 
           <button 
             onClick={() => navigate('/dashboard/recipients')}
-            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left cursor-pointer"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
@@ -139,15 +137,15 @@ const ProfilePage = () => {
 
           <button 
             onClick={() => navigate('/dashboard/upgrade')}
-            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left cursor-pointer"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
                 <FileText className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-white text-sm font-medium">Verification & Tier</p>
-                <p className="text-slate-400 text-xs">Current Tier: <span className="text-amber-400 font-semibold">{user?.investmentTier || 'Starter'}</span></p>
+                <p className="text-white text-sm font-medium">Verification</p>
+                <p className="text-slate-400 text-xs">Tier level & KYC verification status</p>
               </div>
             </div>
             <ChevronRight className="w-5 h-5 text-slate-500" />
@@ -155,7 +153,7 @@ const ProfilePage = () => {
 
           <button 
             onClick={() => navigate('/dashboard/history')}
-            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left cursor-pointer"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
@@ -200,7 +198,7 @@ const ProfilePage = () => {
           
           <button 
             onClick={() => navigate('/dashboard/settings')}
-            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left cursor-pointer"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
@@ -251,7 +249,7 @@ const ProfilePage = () => {
           
           <button 
             onClick={() => navigate('/dashboard/support')}
-            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left"
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors text-left cursor-pointer"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
@@ -316,7 +314,7 @@ const ProfilePage = () => {
           <div className="rounded-3xl bg-slate-900 border border-white/10 w-full max-w-md p-6 space-y-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <h3 className="text-lg font-bold text-white">Edit Account Information</h3>
-              <button onClick={() => setShowAccountModal(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setShowAccountModal(false)} className="text-slate-400 hover:text-white cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -363,14 +361,14 @@ const ProfilePage = () => {
                 <Button
                   onClick={() => setShowAccountModal(false)}
                   variant="outline"
-                  className="flex-1 rounded-2xl border-white/10 text-white hover:bg-white/5"
+                  className="flex-1 rounded-2xl border-white/10 text-white hover:bg-white/5 cursor-pointer"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleSaveProfile}
                   disabled={isLoading}
-                  className="flex-1 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white"
+                  className="flex-1 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white cursor-pointer"
                 >
                   <Save className="w-4 h-4 mr-2" />
                   {isLoading ? 'Saving...' : 'Save Changes'}
