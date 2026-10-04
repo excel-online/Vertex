@@ -29,7 +29,7 @@ import AccountUpgrade from '@/pages/user/AccountUpgrade';
 import ContactSupport from '@/pages/user/ContactSupport';
 import ProfilePage from '@/pages/user/ProfilePage';
 import Recipients from '@/pages/user/Recipients';
-import Rewards from '@/pages/user/Rewards';                 // <-- Added Rewards Page import
+import Rewards from '@/pages/user/Rewards';
 
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminUsers from '@/pages/admin/AdminUsers';
@@ -131,15 +131,15 @@ function AppRoutes() {
         <Route path="support" element={<ContactSupport />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="recipients" element={<Recipients />} />
-        <Route path="rewards" element={<Rewards />} />           {/* <-- Added Rewards Route */}
+        <Route path="rewards" element={<Rewards />} />
       </Route>
 
-      {/* Admin Routes */}
+      {/* Admin Routes (Removed isAdmin prop to match DashboardLayout layout props) */}
       <Route 
         path="/admin" 
         element={
           <ProtectedRoute adminOnly={true}>
-            <DashboardLayout isAdmin={true} />
+            <DashboardLayout />
           </ProtectedRoute>
         }
       >
