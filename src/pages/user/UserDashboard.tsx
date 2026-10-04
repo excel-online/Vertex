@@ -14,6 +14,8 @@ import {
   EyeOff,
   ShieldCheck,
   Zap,
+  Plus,
+  Send,
   User as UserIcon
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -192,34 +194,34 @@ const UserDashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5A4FE6]"></div>
       </div>
     );
   }
 
   return (
     <div className="space-y-4 pb-16 max-w-7xl mx-auto px-4 sm:px-6 text-slate-800">
-      
-      {/* 1. TOP HEADER BAR: Profile Icon & Greeting */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2 pb-1 border-b border-slate-100">
-        <NavLink to="/dashboard/settings" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
-            <UserIcon className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-              Hi, <span className="text-purple-700 font-bold">{user?.firstName || 'Trader'}</span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <CheckCircle className="w-3 h-3 mr-1 text-emerald-600" /> Verified
-              </span>
-            </h1>
-          </div>
-        </NavLink>
 
-        <div className="flex items-center gap-3">
-          <NavLink 
-            to="/dashboard/rewards" 
-            className="bg-purple-600 hover:bg-purple-700 text-white px-3.5 py-2 rounded-2xl shadow-md flex items-center gap-2 font-semibold text-xs transition-all"
+      {/* 1. TOP HEADER — reference style: soft lavender gradient band */}
+      <div className="relative -mx-4 sm:-mx-6 px-4 sm:px-6 pt-2 pb-6 bg-gradient-to-b from-[#DCD7FA] via-[#EFEDFC] to-transparent rounded-b-[2.5rem]">
+        <div className="flex items-center justify-between gap-3">
+          <NavLink to="/dashboard/settings" className="flex items-center gap-3 group min-w-0">
+            <div className="w-11 h-11 shrink-0 rounded-full bg-[#5A4FE6] flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+              <UserIcon className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2 truncate">
+                Hi, <span className="truncate">{user?.firstName || 'Trader'}</span>
+                <span className="inline-flex shrink-0 items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <CheckCircle className="w-3 h-3 mr-1 text-emerald-600" /> Verified
+                </span>
+              </h1>
+            </div>
+          </NavLink>
+
+          <NavLink
+            to="/dashboard/rewards"
+            className="shrink-0 bg-[#5A4FE6] hover:bg-[#4B3FD1] text-white px-4 py-2.5 rounded-2xl shadow-md flex items-center gap-2 font-semibold text-xs transition-all"
           >
             <Gift className="w-3.5 h-3.5 text-purple-200" />
             Earn ${user?.bonusBalance?.toLocaleString() || '155.00'}
@@ -227,16 +229,16 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* TradingView Ticker Widget */}
+      {/* TradingView Ticker Widget (untouched) */}
       <TradingViewTicker />
 
       {/* 2. MAIN BALANCE & ACCOUNT OVERVIEW CARDS */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        
-        <div className="lg:col-span-2 relative overflow-hidden rounded-3xl bg-white border border-slate-200 p-5 sm:p-6 shadow-sm">
+
+        <div className="lg:col-span-2 rounded-3xl bg-white border border-slate-200 p-5 sm:p-6 shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-slate-500 text-xs font-medium tracking-wide">Total Balance</span>
-            <button 
+            <span className="text-slate-500 text-sm font-medium">Total Balance</span>
+            <button
               onClick={() => setShowBalance(!showBalance)}
               className="text-slate-400 hover:text-slate-700 transition-colors p-1"
               aria-label="Toggle balance visibility"
@@ -245,38 +247,40 @@ const UserDashboard = () => {
             </button>
           </div>
 
-          <div className="flex items-baseline gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-5">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
               {showBalance ? `$${dashboardData?.user.totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}` : '••••••••'}
             </h2>
-            <span className="text-emerald-700 text-xs font-medium flex items-center bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+            <span className="text-emerald-700 text-xs font-semibold flex items-center bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
               <TrendingUp className="w-3 h-3 mr-1 text-emerald-600" /> Ready
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-100">
-            <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-100 flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-[11px] font-medium">Total Deposited</p>
-                <p className="text-slate-900 font-bold text-base mt-0.5">
-                  {showBalance ? `$${dashboardData?.user.totalDeposited.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}` : '••••'}
-                </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100">
+            {/* Total Deposited — reference currency-card style */}
+            <div className="rounded-2xl bg-white border border-slate-200 p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-slate-500 text-xs font-medium">Total Deposited</span>
+                <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                  <ArrowDownLeft className="w-4 h-4" />
+                </div>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
-                <ArrowDownLeft className="w-4 h-4" />
-              </div>
+              <p className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                {showBalance ? `$${dashboardData?.user.totalDeposited.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}` : '••••'}
+              </p>
             </div>
 
-            <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-100 flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-[11px] font-medium">Total Earnings</p>
-                <p className="text-slate-900 font-bold text-base mt-0.5">
-                  {showBalance ? `$${dashboardData?.user.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}` : '••••'}
-                </p>
+            {/* Total Earnings — reference currency-card style */}
+            <div className="rounded-2xl bg-white border border-slate-200 p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-slate-500 text-xs font-medium">Total Earnings</span>
+                <div className="w-9 h-9 rounded-full bg-purple-50 text-[#5A4FE6] flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4" />
+                </div>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100">
-                <TrendingUp className="w-4 h-4" />
-              </div>
+              <p className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                {showBalance ? `$${dashboardData?.user.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '0.00'}` : '••••'}
+              </p>
             </div>
           </div>
         </div>
@@ -285,7 +289,7 @@ const UserDashboard = () => {
         <div className="rounded-3xl bg-white border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
           <div className="space-y-3">
             <h3 className="text-slate-900 font-bold text-sm mb-1">Account Overview</h3>
-            
+
             <div className="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 border border-slate-100">
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
@@ -329,35 +333,29 @@ const UserDashboard = () => {
 
       </div>
 
-      {/* 3. CORE ACTION BUTTONS (Account Upgrade removed & relocated to settings) */}
+      {/* 3. CORE ACTION BUTTONS — reference circular-button style */}
       <div className="rounded-3xl bg-white border border-slate-200 p-5 shadow-sm">
-        <h3 className="text-slate-900 font-bold text-sm mb-3">Quick Actions</h3>
-        <div className="grid grid-cols-3 gap-3">
-          <NavLink to="/dashboard/deposits" className="group">
-            <div className="bg-slate-50 hover:bg-purple-50 border border-slate-100 hover:border-purple-200 rounded-2xl p-3.5 text-center transition-all duration-300 flex flex-col items-center justify-center">
-              <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform border border-emerald-100">
-                <ArrowDownLeft className="w-5 h-5" />
-              </div>
-              <span className="text-slate-800 text-xs font-semibold">Add Money</span>
+        <h3 className="text-slate-900 font-bold text-sm mb-5">Quick Actions</h3>
+        <div className="flex items-start justify-between sm:justify-around gap-2">
+          <NavLink to="/dashboard/deposits" className="group flex flex-col items-center gap-2 flex-1">
+            <div className="w-14 h-14 rounded-full bg-[#5A4FE6] text-white flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:scale-105 transition-transform">
+              <Plus className="w-6 h-6" />
             </div>
+            <span className="text-slate-800 text-xs font-semibold text-center">Add Money</span>
           </NavLink>
 
-          <NavLink to="/dashboard/withdrawals" className="group">
-            <div className="bg-slate-50 hover:bg-purple-50 border border-slate-100 hover:border-purple-200 rounded-2xl p-3.5 text-center transition-all duration-300 flex flex-col items-center justify-center">
-              <div className="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform border border-rose-100">
-                <ArrowUpRight className="w-5 h-5" />
-              </div>
-              <span className="text-slate-800 text-xs font-semibold">Send / Withdraw</span>
+          <NavLink to="/dashboard/withdrawals" className="group flex flex-col items-center gap-2 flex-1">
+            <div className="w-14 h-14 rounded-full bg-white border-2 border-[#E4E2F7] text-[#5A4FE6] flex items-center justify-center group-hover:border-[#5A4FE6] group-hover:scale-105 transition-all">
+              <Send className="w-5 h-5" />
             </div>
+            <span className="text-slate-800 text-xs font-semibold text-center">Send / Withdraw</span>
           </NavLink>
 
-          <NavLink to="/dashboard/signals" className="group">
-            <div className="bg-slate-50 hover:bg-purple-50 border border-slate-100 hover:border-purple-200 rounded-2xl p-3.5 text-center transition-all duration-300 flex flex-col items-center justify-center">
-              <div className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform border border-blue-100">
-                <Zap className="w-5 h-5" />
-              </div>
-              <span className="text-slate-800 text-xs font-semibold">Signal Purchase</span>
+          <NavLink to="/dashboard/signals" className="group flex flex-col items-center gap-2 flex-1">
+            <div className="w-14 h-14 rounded-full bg-white border-2 border-[#E4E2F7] text-[#5A4FE6] flex items-center justify-center group-hover:border-[#5A4FE6] group-hover:scale-105 transition-all">
+              <Zap className="w-5 h-5" />
             </div>
+            <span className="text-slate-800 text-xs font-semibold text-center">Signal Purchase</span>
           </NavLink>
         </div>
       </div>
@@ -366,7 +364,7 @@ const UserDashboard = () => {
       <div className="rounded-3xl bg-white border border-slate-200 p-5 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-slate-900 font-bold text-sm">Recent Transactions</h3>
-          <NavLink to="/dashboard/history" className="text-xs text-purple-600 hover:text-purple-700 font-semibold">
+          <NavLink to="/dashboard/history" className="text-xs text-[#5A4FE6] hover:text-[#4B3FD1] font-semibold">
             See all
           </NavLink>
         </div>
@@ -374,10 +372,10 @@ const UserDashboard = () => {
         <div className="space-y-2.5">
           {dashboardData?.recentTransactions && dashboardData.recentTransactions.length > 0 ? (
             dashboardData.recentTransactions.slice(0, 3).map((tx) => (
-              <div key={tx._id} className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+              <div key={tx._id} className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0">
                 <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-                    tx.type === 'Deposit' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100'
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center ${
+                    tx.type === 'Deposit' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
                   }`}>
                     {tx.type === 'Deposit' ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
                   </div>
@@ -387,10 +385,10 @@ const UserDashboard = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className={`text-xs font-bold ${tx.type === 'Deposit' ? 'text-emerald-700' : 'text-rose-700'}`}>
+                  <p className={`text-xs font-bold mb-0.5 ${tx.type === 'Deposit' ? 'text-emerald-700' : 'text-rose-700'}`}>
                     {tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toLocaleString()}
                   </p>
-                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
                     {tx.status}
                   </span>
                 </div>
@@ -408,10 +406,10 @@ const UserDashboard = () => {
       <div className="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col">
         <div className="p-3.5 sm:p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2.5 bg-slate-50/50">
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-purple-600" />
+            <BarChart3 className="w-4 h-4 text-[#5A4FE6]" />
             <h3 className="text-slate-900 font-bold text-sm">Market Candle Chart</h3>
           </div>
-          
+
           <div className="flex flex-wrap gap-1">
             {quickSymbols.map((item) => (
               <button
@@ -422,7 +420,7 @@ const UserDashboard = () => {
                 }}
                 className={`px-2.5 py-1 text-xs font-semibold rounded-xl transition-all ${
                   chartSymbol === item.symbol
-                    ? 'bg-purple-600 text-white shadow-md'
+                    ? 'bg-[#5A4FE6] text-white shadow-md'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
                 }`}
               >
@@ -433,7 +431,7 @@ const UserDashboard = () => {
         </div>
 
         <div className="h-[400px] w-full p-2">
-          <TradingViewChart 
+          <TradingViewChart
             symbol={chartSymbol}
             exchange={chartExchange}
             interval="30"
